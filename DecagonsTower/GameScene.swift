@@ -1,6 +1,20 @@
 import SpriteKit
 import GameplayKit
 
+enum PhysicsCategory {
+    case player
+    case tree
+    case water
+    
+    var value: UInt32 {
+        switch self {
+        case .player: 0x1 << 0
+        case .tree: 0x1 << 1
+        case .water: 0x1 << 2
+        }
+    }
+}
+
 class GameScene: SKScene {
     var player: Player! // Creates player character sprite
     var tileMap: SKTileMapNode! // Creates a tiled map
@@ -11,6 +25,8 @@ class GameScene: SKScene {
         setupTileMap()
     }
     
+    
+    
     // Sets map as a big green tile, player character loaded from assets, and places player on the map
     func setupScene() {
         backgroundColor = .green
@@ -20,11 +36,48 @@ class GameScene: SKScene {
         let firstFrame = idleFrames.first ?? SKTexture(imageNamed: "Soldier-Idle")
         
         // Initialize player with first frame
-        player = Player(texture: firstFrame, color: .clear, size: CGSize(width: 264, height: 264))
-        player.position = CGPoint(x: self.size.width / 2, y: self.size.height / 2)
+        player = Player(texture: SKTexture(imageNamed: "soldier-test"), color: .clear, size: CGSize(width: 23, height: 27))
+        
+//        player.position = CGPoint(x: self.size.width / 2, y: self.size.height / 2)
+        player.position = .init(x: 0, y: 0)
+        player.physicsBody = makePlayerPhysicsBody(size: player.frame.size)
+        
         
         addChild(player)
         player.setIdleAnimation() // Start idle animation
+        
+        
+        if let tree1 = childNode(withName: "tree1") {
+            tree1.physicsBody = makeTreePhysicsBody(size: tree1.frame.size)
+            
+        } else {
+            print("TREE 1 not found")
+        }
+
+        
+        physicsWorld.contactDelegate = self
+        
+    }
+    
+    private func makeTreePhysicsBody(size: CGSize) -> SKPhysicsBody {
+        let body = SKPhysicsBody(rectangleOf: size)
+        body.isDynamic = false
+        body.affectedByGravity = false
+        body.categoryBitMask = PhysicsCategory.tree.value
+        body.collisionBitMask = PhysicsCategory.player.value
+    
+        return body
+    }
+    
+    private func makePlayerPhysicsBody(size: CGSize) -> SKPhysicsBody {
+        let body = SKPhysicsBody(rectangleOf: size)
+        body.isDynamic = true
+        body.affectedByGravity = false
+        body.allowsRotation = false
+        body.categoryBitMask = PhysicsCategory.player.value
+        body.collisionBitMask = PhysicsCategory.tree.value
+        body.contactTestBitMask = PhysicsCategory.tree.value
+        return body
     }
     
     // Setup for tiled map
@@ -41,8 +94,25 @@ class GameScene: SKScene {
     
     // Moves players to that tile and plays animation
     func movePlayer(to position: CGPoint) {
-        let moveAction = SKAction.move(to: position, duration: 0.5)
-        player.run(moveAction)
+        
+        let currentPosition = player.position
+        
+        let dx = position.x - currentPosition.x
+        let dy = position.y - currentPosition.y
+        let alpha: CGFloat = 0.001
+        let maxDelta: CGFloat = 300
+        
+        var finalDX = dx
+        if abs(dx) > maxDelta {
+            finalDX = maxDelta * (dx > 0 ? 1 : -1)
+        }
+        var finalDY = dy
+        if abs(dy) > maxDelta {
+            finalDY = maxDelta * (dy > 0 ? 1 : -1)
+        }
+        
+        print(dx * alpha)
+        player.physicsBody?.applyImpulse(.init(dx: finalDX, dy: finalDY))
     }
 }
 
@@ -86,5 +156,12 @@ class Player: SKSpriteNode {
         
         let idleAnimation = SKAction.animate(with: idleFrames, timePerFrame: 0.1)
         self.run(SKAction.repeatForever(idleAnimation))
+    }
+}
+
+extension GameScene: SKPhysicsContactDelegate {
+    func didBegin(_ contact: SKPhysicsContact) {
+        contact.bodyA.velocity = .init(dx: 0, dy: 0)
+        contact.bodyB.velocity = .init(dx: 0, dy: 0)
     }
 }
