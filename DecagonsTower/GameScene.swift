@@ -6,6 +6,7 @@ struct PhysicsCategory {
     static let obstacle: UInt32 = 0x1 << 1
     static let interactionZone: UInt32 = 0x1 << 2
     static let wolf: UInt32 = 0x1 << 3
+    static let castle: UInt32 = 0x1 << 4
 }
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
@@ -16,6 +17,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var inRiddle = false
     var riddleIndex = 0
     var correctAnswers = 0
+    var castle: SKShapeNode!
 
     let riddles: [(question: String, correct: String, wrong: String)] = [
         ("What has to be broken before you can use it?", "An egg", "A clock"),
@@ -31,33 +33,75 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupPlayer()
         setupWolf()
         setupRiddleZone()
+        setupCastle()
     }
 
     func addMapBackground() {
         let map = SKSpriteNode(imageNamed: "map") // Make sure "map" is added to Assets
+        
         map.position = CGPoint(x: size.width / 2, y: size.height / 2)
+        map.size = CGSize(width: UIScreen.main.bounds.width, height:UIScreen.main.bounds.height )
         map.zPosition = -10
-        map.size = size
         addChild(map)
     }
 
     func setupPlayer() {
         let firstFrame = Player.loadIdleFrames().first ?? SKTexture()
-        player = Player(texture: firstFrame, color: .clear, size: CGSize(width: 23, height: 27))
+        player = Player(texture: firstFrame, color: .clear, size: CGSize(width: 125, height: 125))
         player.position = CGPoint(x: size.width / 2, y: 60)
         player.zPosition = 10
         player.physicsBody = SKPhysicsBody(rectangleOf: player.size)
         player.physicsBody?.isDynamic = true
         player.physicsBody?.affectedByGravity = false
         player.physicsBody?.allowsRotation = false
-        player.physicsBody?.categoryBitMask = PhysicsCategory.player
-        player.physicsBody?.contactTestBitMask = PhysicsCategory.wolf | PhysicsCategory.interactionZone
+        player.physicsBody?.linearDamping = 5.0
+        player.physicsBody?.categoryBitMask =  PhysicsCategory.player
+        player.physicsBody?.contactTestBitMask =
+PhysicsCategory.wolf | PhysicsCategory.interactionZone |
+            PhysicsCategory.castle
+        player.physicsBody?.collisionBitMask = PhysicsCategory.castle
         addChild(player)
         player.setIdleAnimation()
     }
-
+    func setupCastle () {
+        var rect = CGRect()
+        rect.origin.x = UIScreen.main.bounds.width / 2 - 100
+        rect.origin.y = UIScreen.main.bounds.height - 440
+        rect.size = CGSize(width: 220, height: 370)
+        let center = CGPoint(x:  UIScreen.main.bounds.width / 2 - 10, y: UIScreen.main.bounds.height - 440)
+        let radius: CGFloat = 100
+        let position1 = CGPoint(x: center.x, y: center.y + radius)
+        let shape = SKShapeNode(ellipseIn: rect)
+        
+        shape.position = position1
+        shape.fillColor = .red
+        shape.strokeColor = .red
+        shape.lineWidth = 5
+        shape.physicsBody = SKPhysicsBody(circleOfRadius: radius)
+        shape.physicsBody?.node?.position = position1
+        shape.physicsBody?.affectedByGravity = false
+        shape.physicsBody?.categoryBitMask = PhysicsCategory.castle
+        shape.physicsBody?.collisionBitMask = PhysicsCategory.player
+        shape.physicsBody?.isDynamic = false
+        addChild(shape)
+        
+        let shape2 = SKShapeNode(ellipseIn: rect)
+        let position2 = CGPoint(x: position1.x, y: position1.y + 85)
+        shape2.position = position2
+        shape2.fillColor = .black
+        shape2.strokeColor = .black
+        shape2.lineWidth = 5
+        shape2.physicsBody = SKPhysicsBody(circleOfRadius: radius)
+        shape2.physicsBody?.node?.position = position2
+        shape2.physicsBody?.affectedByGravity = false
+        shape2.physicsBody?.categoryBitMask = PhysicsCategory.castle
+        shape2.physicsBody?.collisionBitMask = PhysicsCategory.player
+        shape2.physicsBody?.isDynamic = false
+        addChild(shape2)
+           
+    }
     func setupWolf() {
-        wolfNPC = SKSpriteNode(imageNamed: "Wolf") // Make sure "Wolf" is added to Assets
+        wolfNPC = SKSpriteNode(imageNamed: "wolf") // Make sure "Wolf" is added to Assets
         wolfNPC.size = CGSize(width: 50, height: 50)
         wolfNPC.position = CGPoint(x: size.width / 2, y: 410)
         wolfNPC.name = "WolfNPC"
@@ -69,9 +113,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(wolfNPC)
 
         // Simple wiggle animation
-        let wiggleLeft = SKAction.moveBy(x: -5, y: 0, duration: 0.5)
-        let wiggleRight = SKAction.moveBy(x: 5, y: 0, duration: 0.5)
-        let wiggle = SKAction.sequence([wiggleLeft, wiggleRight])
+        let wiggleLeft = SKAction.moveBy(x: -40, y: 0, duration: 3.0)
+        let wiggleRight = SKAction.moveBy(x: 40, y: 0, duration: 3.0)
+        let flip = SKAction.run { [weak self] in
+            self?.wolfNPC.xScale *= -1
+        }
+        let wiggle = SKAction.sequence([wiggleLeft, flip, wiggleRight, flip])
         wolfNPC.run(SKAction.repeatForever(wiggle))
     }
 
@@ -88,22 +135,55 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        guard let touch = touches.first else { return }
+//        if inRiddle { return }
+//
+//        let target = touch.location(in: self)
+//        let distance = hypot(player.position.x - target.x, player.position.y - target.y)
+//        let speed: CGFloat = 100.0
+//        let duration = TimeInterval(distance / speed)
+//
+//        if target.x < player.position.x {
+//            player.xScale = -1
+//        } else {
+//            player.xScale = 1
+//        }
+//        
+//        if !childNode(withName: "castle")!.frame.contains(target) {
+//            let moveAction = SKAction.move(to: target, duration: duration)
+//            player.run(moveAction)
+//        }
         guard let touch = touches.first else { return }
         if inRiddle { return }
 
-        let target = touch.location(in: self)
-        let distance = hypot(player.position.x - target.x, player.position.y - target.y)
-        let speed: CGFloat = 100.0
-        let duration = TimeInterval(distance / speed)
-
-        if target.x < player.position.x {
-            player.xScale = -1
-        } else {
-            player.xScale = 1
+        let position = touch.location(in: self)
+            
+        let currentPosition = player.position
+        
+        var dx = position.x - currentPosition.x
+        var dy = position.y - currentPosition.y
+        
+        let length = sqrt(dx * dx + dy * dy)
+        dx = dx / length
+        dy = dy / length
+        
+        let alpha: CGFloat = 20
+        let maxDelta: CGFloat = 300
+        
+        dx = dx * alpha
+        dy = dy * alpha
+        
+        var finalDX = dx
+        if abs(dx) > maxDelta {
+            finalDX = maxDelta * (dx > 0 ? 1 : -1)
         }
-
-        let moveAction = SKAction.move(to: target, duration: duration)
-        player.run(moveAction)
+        var finalDY = dy
+        if abs(dy) > maxDelta {
+            finalDY = maxDelta * (dy > 0 ? 1 : -1)
+        }
+        
+        player.setWalkAnimation()
+        player.physicsBody?.applyImpulse(.init(dx: finalDX, dy: finalDY))
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -199,40 +279,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             view.presentScene(nextScene, transition: .doorway(withDuration: 1.0))
         }
     }
-}
+    
+    // Update function used if player is walking or idling based on physicsBody velocity
+    override func update(_ currentTime: TimeInterval) {
+        let velocity = player.physicsBody?.velocity ?? .zero
+        let speed = hypot(velocity.dx, velocity.dy)
 
-// MARK: - Player
-class Player: SKSpriteNode {
-    required override init(texture: SKTexture?, color: UIColor, size: CGSize) {
-        super.init(texture: texture, color: color, size: size)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-
-    static func loadIdleFrames() -> [SKTexture] {
-        var frames: [SKTexture] = []
-        let spriteSheet = SKTexture(imageNamed: "Soldier-Idle") // Sprite sheet with 6 frames side-by-side
-        spriteSheet.filteringMode = .nearest
-
-        let count = 6
-        let frameWidth = 1.0 / CGFloat(count)
-
-        for i in 0..<count {
-            let rect = CGRect(x: CGFloat(i) * frameWidth, y: 0, width: frameWidth, height: 1)
-            let texture = SKTexture(rect: rect, in: spriteSheet)
-            texture.filteringMode = .nearest
-            frames.append(texture)
+        if speed < 10 {
+            player.stopWalking()
+        } else {
+            player.setWalkAnimation()
         }
-
-        return frames
-    }
-
-    func setIdleAnimation() {
-        let frames = Player.loadIdleFrames()
-        let animate = SKAction.animate(with: frames, timePerFrame: 0.1)
-        run(SKAction.repeatForever(animate), withKey: "Idle")
     }
 }
 
