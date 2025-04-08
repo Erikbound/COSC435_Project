@@ -1,0 +1,10 @@
+# Xcode user state
+*.xcuserstate
+
+# Xcode project files to ignore
+*.xcworkspace
+xcuserdata/
+
+# Build stuff
+DerivedData/
+build/
