@@ -18,6 +18,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var riddleIndex = 0
     var correctAnswers = 0
     var castle: SKShapeNode!
+    
+    private var cameraNode = SKCameraNode()
+    private var movementDirection: CGVector?
 
     let riddles: [(question: String, correct: String, wrong: String)] = [
         ("What has to be broken before you can use it?", "An egg", "A clock"),
@@ -26,6 +29,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     ]
 
     override func didMove(to view: SKView) {
+        // SKCameraNode used to set camera on player character
+        cameraNode = SKCameraNode()
+        camera = cameraNode
+        addChild(cameraNode)
+        cameraNode.setScale(0.75) // Zooms in slightly
+        
         backgroundColor = .green
         physicsWorld.contactDelegate = self
 
@@ -182,6 +191,7 @@ PhysicsCategory.wolf | PhysicsCategory.interactionZone |
             finalDY = maxDelta * (dy > 0 ? 1 : -1)
         }
         
+        movementDirection = nil
         player.setWalkAnimation()
         player.physicsBody?.applyImpulse(.init(dx: finalDX, dy: finalDY))
     }
@@ -190,6 +200,7 @@ PhysicsCategory.wolf | PhysicsCategory.interactionZone |
         guard let touch = touches.first else { return }
         let location = touch.location(in: self)
         let node = atPoint(location)
+        movePlayerToward(touch.location(in: self))
 
         if inRiddle {
             if node.name == "Choice_Correct" {
@@ -201,6 +212,23 @@ PhysicsCategory.wolf | PhysicsCategory.interactionZone |
                 presentRiddle()
             }
         }
+    }
+    
+    // Used for player movement
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else { return }
+        movePlayerToward(touch.location(in: self))
+    }
+    
+    // Helper function used for player movement
+    private func movePlayerToward(_ location: CGPoint) {
+        let direction = CGVector(dx: location.x - player.position.x, dy: location.y - player.position.y)
+        let length = sqrt(direction.dx * direction.dx + direction.dy * direction.dy)
+        
+        guard length > 0 else { return }
+        
+        let normalized = CGVector(dx: direction.dx / length, dy: direction.dy / length)
+        movementDirection = normalized
     }
 
     func didBegin(_ contact: SKPhysicsContact) {
@@ -290,6 +318,29 @@ PhysicsCategory.wolf | PhysicsCategory.interactionZone |
         } else {
             player.setWalkAnimation()
         }
+        
+        // Holding on direction allows player to keep moving
+        if let direction = movementDirection {
+            let speed: CGFloat = 100
+            player.physicsBody?.velocity = CGVector(dx: direction.dx * speed, dy: direction.dy * speed)
+            player.setWalkAnimation()
+        } else {
+            let velocity = player.physicsBody?.velocity ?? .zero
+            let speed = hypot(velocity.dx, velocity.dy)
+            if speed < 10 {
+                player.stopWalking()
+                player.physicsBody?.velocity = .zero
+            }
+        }
+        
+        // Camera follows the player
+        let lerpFactor: CGFloat = 0.1
+        let targetCameraPosition = player.position
+        let newPosition = CGPoint(
+            x: cameraNode.position.x + (targetCameraPosition.x - cameraNode.position.x) * lerpFactor,
+            y: cameraNode.position.y + (targetCameraPosition.y - cameraNode.position.y) * lerpFactor
+        )
+        cameraNode.position = newPosition
     }
 }
 
