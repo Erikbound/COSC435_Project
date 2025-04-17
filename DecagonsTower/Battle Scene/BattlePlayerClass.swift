@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class BattlePlayerClass{
-    var maxHP: Int = 100
+    var maxHP: Int = 400
     var currentHP: Int
     var maxEnergy: Int = 10
     var currentEnergy: Int

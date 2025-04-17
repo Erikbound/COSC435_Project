@@ -17,7 +17,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = GameViewController()
+        
+        //Uncomment this line to set the view back to the game view
+        //window?.rootViewController = GameViewController()
+        
+        //Comment these lines out too
+        //
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let battleVC = storyboard.instantiateViewController(withIdentifier: "BattleViewController") as! BattleViewController
+        //
+        
+        window?.rootViewController = battleVC
         window?.makeKeyAndVisible()
         return true
     }

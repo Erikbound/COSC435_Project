@@ -26,63 +26,64 @@
         <!--Battle View Controller-->
         <scene sceneID="fx5-HK-uS5">
             <objects>
-                <viewController id="1dI-ql-deQ" customClass="BattleViewController" customModule="DecagonsTower" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="rPI-ur-1qH">
+                <viewController storyboardIdentifier="BattleViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="1dI-ql-deQ" customClass="BattleViewController" customModule="DecagonsTower" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="rPI-ur-1qH" customClass="SKView">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="HP: ?/?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DZ9-DX-F4S" userLabel="PlayerHPLabel">
-                                <rect key="frame" x="288" y="723" width="53" height="21"/>
+                                <rect key="frame" x="257" y="720" width="115" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Energy: ?/?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xTk-e7-uRP" userLabel="PlayerEnergyLabel">
-                                <rect key="frame" x="288" y="752" width="84" height="21"/>
+                                <rect key="frame" x="257" y="749" width="120" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="HP: ?/?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3kJ-aw-u5q" userLabel="EnemyHPLabel">
+                                <rect key="frame" x="257" y="60" width="120" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Energy: ?/?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uXT-de-SL3" userLabel="EnemyEnergyLabel">
-                                <rect key="frame" x="288" y="108" width="84" height="21"/>
+                                <rect key="frame" x="257" y="89" width="120" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yKK-pz-dIS" userLabel="PlayerCard1">
-                                <rect key="frame" x="16" y="526" width="98" height="175"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ElS-SO-yEP" userLabel="PlayerCard2">
-                                <rect key="frame" x="147" y="526" width="98" height="175"/>
+                                <rect key="frame" x="136" y="534" width="120" height="172"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pvb-xr-FFf" userLabel="PlayerCard3">
-                                <rect key="frame" x="274" y="526" width="98" height="175"/>
+                                <rect key="frame" x="257" y="534" width="120" height="172"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="HP: ?/?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3kJ-aw-u5q" userLabel="EnemyHPLabel">
-                                <rect key="frame" x="288" y="79" width="53" height="21"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yKK-pz-dIS" userLabel="PlayerCard1">
+                                <rect key="frame" x="16" y="534" width="120" height="172"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="aR3-l6-5a6"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <connections>
-                        <outlet property="EnemyEnergyLabel" destination="uXT-de-SL3" id="ad0-CW-pQT"/>
-                        <outlet property="EnemyHPLabel" destination="3kJ-aw-u5q" id="esZ-Jb-K2g"/>
-                        <outlet property="PlayerCard1" destination="yKK-pz-dIS" id="5RG-fE-Yz1"/>
-                        <outlet property="PlayerCard2" destination="ElS-SO-yEP" id="mNB-kx-c8d"/>
-                        <outlet property="PlayerCard3" destination="pvb-xr-FFf" id="ViY-w7-64I"/>
-                        <outlet property="PlayerEnergyLabel" destination="xTk-e7-uRP" id="eqb-80-iSV"/>
-                        <outlet property="PlayerHPLabel" destination="DZ9-DX-F4S" id="lWH-df-Aa6"/>
+                        <outlet property="EnemyEnergyLabel" destination="uXT-de-SL3" id="MER-52-0cj"/>
+                        <outlet property="EnemyHPLabel" destination="3kJ-aw-u5q" id="4l3-hM-oZW"/>
+                        <outlet property="PlayerCard1" destination="yKK-pz-dIS" id="dA5-Tb-q1M"/>
+                        <outlet property="PlayerCard2" destination="ElS-SO-yEP" id="cBj-of-sPp"/>
+                        <outlet property="PlayerCard3" destination="pvb-xr-FFf" id="Vwk-9O-cjT"/>
+                        <outlet property="PlayerEnergyLabel" destination="xTk-e7-uRP" id="rmR-g3-HMo"/>
+                        <outlet property="PlayerHPLabel" destination="DZ9-DX-F4S" id="jiS-Qq-0fE"/>
+                        <outlet property="skView" destination="rPI-ur-1qH" id="z7i-yl-d8A"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W0q-XT-F2W" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
