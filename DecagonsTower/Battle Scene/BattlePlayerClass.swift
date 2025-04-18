@@ -26,15 +26,24 @@ class BattlePlayerClass{
     var discardPile: [CardData] = []
     
     
+    var selectedCard: CardData?
+    
+    
     init() {
         self.currentHP = self.maxHP
         self.currentEnergy = 5
-        self.maxDeckSize = 5 //This changes on level up
+        self.maxDeckSize = 10
         
-        for _ in 0..<self.maxDeckSize{
-            let randCard = "Slime"
-            AddCardtoDeck(name: randCard)
-        }
+//        for _ in 0..<self.maxDeckSize{
+//            let randCard = "Slime"
+//            AddCardtoDeck(name: randCard)
+//        }
+        
+        AddCardtoDeck(name: "Castle Guard")
+        AddCardtoDeck(name: "Slime")
+        AddCardtoDeck(name: "Mage")
+        AddCardtoDeck(name: "Castle Guard")
+        AddCardtoDeck(name: "Castle Guard")
     }
     
     func AddCardtoDeck(name: String){

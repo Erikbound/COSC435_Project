@@ -59,6 +59,10 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yKK-pz-dIS" userLabel="PlayerCard1">
+                                <rect key="frame" x="16" y="534" width="120" height="172"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ElS-SO-yEP" userLabel="PlayerCard2">
                                 <rect key="frame" x="136" y="534" width="120" height="172"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -67,15 +71,43 @@
                                 <rect key="frame" x="257" y="534" width="120" height="172"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yKK-pz-dIS" userLabel="PlayerCard1">
-                                <rect key="frame" x="16" y="534" width="120" height="172"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qJG-Jc-uOM" userLabel="EnemyCard2">
+                                <rect key="frame" x="136" y="118" width="120" height="172"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lH0-4d-JLb" userLabel="EnemyCard3">
+                                <rect key="frame" x="257" y="118" width="120" height="172"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Gqk-1U-gF1" userLabel="EnemyCard1">
+                                <rect key="frame" x="16" y="118" width="120" height="172"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kKe-hl-1Cb" userLabel="CardDescription">
+                                <rect key="frame" x="16" y="714" width="240" height="107"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K1K-Zb-sQI">
+                                <rect key="frame" x="257" y="778" width="95" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Use Card"/>
+                                <connections>
+                                    <action selector="UseCardButton:" destination="1dI-ql-deQ" eventType="touchUpInside" id="mYc-Xg-ocs"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="aR3-l6-5a6"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <connections>
+                        <outlet property="CardDescription" destination="kKe-hl-1Cb" id="Iw6-Bx-6R1"/>
+                        <outlet property="EnemyCard1" destination="Gqk-1U-gF1" id="xpw-Zn-Eka"/>
+                        <outlet property="EnemyCard2" destination="qJG-Jc-uOM" id="1d1-Wa-cWR"/>
+                        <outlet property="EnemyCard3" destination="lH0-4d-JLb" id="OLZ-Ev-TxB"/>
                         <outlet property="EnemyEnergyLabel" destination="uXT-de-SL3" id="MER-52-0cj"/>
                         <outlet property="EnemyHPLabel" destination="3kJ-aw-u5q" id="4l3-hM-oZW"/>
                         <outlet property="PlayerCard1" destination="yKK-pz-dIS" id="dA5-Tb-q1M"/>
@@ -83,6 +115,7 @@
                         <outlet property="PlayerCard3" destination="pvb-xr-FFf" id="Vwk-9O-cjT"/>
                         <outlet property="PlayerEnergyLabel" destination="xTk-e7-uRP" id="rmR-g3-HMo"/>
                         <outlet property="PlayerHPLabel" destination="DZ9-DX-F4S" id="jiS-Qq-0fE"/>
+                        <outlet property="UseCardButtonOutlet" destination="K1K-Zb-sQI" id="jM2-we-T4R"/>
                         <outlet property="skView" destination="rPI-ur-1qH" id="z7i-yl-d8A"/>
                     </connections>
                 </viewController>
