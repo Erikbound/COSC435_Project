@@ -19,15 +19,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         
         //Uncomment this line to set the view back to the game view
-        //window?.rootViewController = GameViewController()
+        window?.rootViewController = GameViewController()
         
         //Comment these lines out too
         //
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let battleVC = storyboard.instantiateViewController(withIdentifier: "BattleViewController") as! BattleViewController
+//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//        let battleVC = storyboard.instantiateViewController(withIdentifier: "BattleViewController") as! BattleViewController
+//        window?.rootViewController = battleVC
         //
         
-        window?.rootViewController = battleVC
+        
         window?.makeKeyAndVisible()
         return true
     }
