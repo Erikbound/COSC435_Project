@@ -32,14 +32,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="HP: ?/?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DZ9-DX-F4S" userLabel="PlayerHPLabel">
-                                <rect key="frame" x="257" y="720" width="115" height="21"/>
+                                <rect key="frame" x="257" y="659" width="115" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Energy: ?/?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xTk-e7-uRP" userLabel="PlayerEnergyLabel">
-                                <rect key="frame" x="257" y="749" width="120" height="21"/>
+                                <rect key="frame" x="257" y="683" width="120" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -60,15 +60,15 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yKK-pz-dIS" userLabel="PlayerCard1">
-                                <rect key="frame" x="16" y="534" width="120" height="172"/>
+                                <rect key="frame" x="16" y="479" width="120" height="172"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ElS-SO-yEP" userLabel="PlayerCard2">
-                                <rect key="frame" x="136" y="534" width="120" height="172"/>
+                                <rect key="frame" x="136" y="479" width="120" height="172"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pvb-xr-FFf" userLabel="PlayerCard3">
-                                <rect key="frame" x="257" y="534" width="120" height="172"/>
+                                <rect key="frame" x="257" y="479" width="120" height="172"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qJG-Jc-uOM" userLabel="EnemyCard2">
@@ -91,7 +91,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K1K-Zb-sQI">
-                                <rect key="frame" x="257" y="778" width="95" height="35"/>
+                                <rect key="frame" x="257" y="733" width="95" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Use Card"/>
@@ -99,12 +99,36 @@
                                     <action selector="UseCardButton:" destination="1dI-ql-deQ" eventType="touchUpInside" id="mYc-Xg-ocs"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Cards Left: ?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4D0-iZ-5dD" userLabel="PlayerCardsLeft">
+                                <rect key="frame" x="257" y="704" width="115" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZKn-sn-1N0" userLabel="End Turn Button">
+                                <rect key="frame" x="259" y="776" width="92" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="End Turn"/>
+                                <connections>
+                                    <action selector="EndTurnButton:" destination="1dI-ql-deQ" eventType="touchUpInside" id="gx5-aA-SpS"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Your turn" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jsc-DY-LJM" userLabel="Textbox">
+                                <rect key="frame" x="28" y="332" width="336" height="82"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="aR3-l6-5a6"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <connections>
                         <outlet property="CardDescription" destination="kKe-hl-1Cb" id="Iw6-Bx-6R1"/>
+                        <outlet property="EndTurnButtonOutlet" destination="ZKn-sn-1N0" id="Ow4-lR-y6J"/>
                         <outlet property="EnemyCard1" destination="Gqk-1U-gF1" id="xpw-Zn-Eka"/>
                         <outlet property="EnemyCard2" destination="qJG-Jc-uOM" id="1d1-Wa-cWR"/>
                         <outlet property="EnemyCard3" destination="lH0-4d-JLb" id="OLZ-Ev-TxB"/>
@@ -113,8 +137,10 @@
                         <outlet property="PlayerCard1" destination="yKK-pz-dIS" id="dA5-Tb-q1M"/>
                         <outlet property="PlayerCard2" destination="ElS-SO-yEP" id="cBj-of-sPp"/>
                         <outlet property="PlayerCard3" destination="pvb-xr-FFf" id="Vwk-9O-cjT"/>
+                        <outlet property="PlayerCardsLeft" destination="4D0-iZ-5dD" id="713-8O-Z1R"/>
                         <outlet property="PlayerEnergyLabel" destination="xTk-e7-uRP" id="rmR-g3-HMo"/>
                         <outlet property="PlayerHPLabel" destination="DZ9-DX-F4S" id="jiS-Qq-0fE"/>
+                        <outlet property="Textbox" destination="jsc-DY-LJM" id="bJz-AT-iNz"/>
                         <outlet property="UseCardButtonOutlet" destination="K1K-Zb-sQI" id="jM2-we-T4R"/>
                         <outlet property="skView" destination="rPI-ur-1qH" id="z7i-yl-d8A"/>
                     </connections>
