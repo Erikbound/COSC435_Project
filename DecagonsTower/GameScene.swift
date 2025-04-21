@@ -1,14 +1,6 @@
 import SpriteKit
 import GameplayKit
 
-struct PhysicsCategory {
-    static let player: UInt32 = 0x1 << 0
-    static let obstacle: UInt32 = 0x1 << 1
-    static let interactionZone: UInt32 = 0x1 << 2
-    static let wolf: UInt32 = 0x1 << 3
-    static let castle: UInt32 = 0x1 << 4
-}
-
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var player: Player!
     var wolfNPC: SKSpriteNode!
@@ -49,7 +41,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     func addMapBackground() {
-        let map = SKSpriteNode(imageNamed: "map") // Make sure "map" is added to Assets
+        let map = SKSpriteNode(imageNamed: "Outside Map") // Make sure "map" is added to Assets
         map.position = CGPoint(x: size.width / 2, y: size.height / 2)
         map.size = CGSize(width: UIScreen.main.bounds.width, height:UIScreen.main.bounds.height )
         map.zPosition = -10
@@ -321,7 +313,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let canEnter = (correctAnswers > 0)
 
         if canEnter, let view = self.view {
-            let nextScene = CastleInteriorScene(size: view.bounds.size, hasHealingCard: rewardHealing)
+            let nextScene = CastleInteriorScene(
+                size: view.bounds.size,
+                hasHealingCard: rewardHealing,
+                showCards: { _ in }
+            )
             nextScene.scaleMode = .resizeFill
             view.presentScene(nextScene, transition: .doorway(withDuration: 1.0))
         }
@@ -362,61 +358,5 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             y: cameraNode.position.y + (targetCameraPosition.y - cameraNode.position.y) * lerpFactor
         )
         cameraNode.position = newPosition
-    }
-}
-
-// MARK: - CastleInteriorScene
-class CastleInteriorScene: SKScene {
-    var hasHealingCard: Bool = false
-    var inventory: [String: Bool] = [:]
-
-    init(size: CGSize, hasHealingCard: Bool) {
-        self.hasHealingCard = hasHealingCard
-        super.init(size: size)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-
-    override func didMove(to view: SKView) {
-        backgroundColor = .darkGray
-
-        let label = SKLabelNode(text: "🏰 Inside the Castle")
-        label.fontSize = 28
-        label.fontColor = .white
-        label.position = CGPoint(x: size.width / 2, y: size.height - 100)
-        addChild(label)
-
-        inventory = [
-            "Hit": true,
-            "Repel": true,
-            "Healing": hasHealingCard,
-            "Laser": true
-        ]
-
-        setupInventoryUI()
-    }
-
-    func setupInventoryUI() {
-        let cardNames = ["Hit", "Repel", "Healing", "Laser"]
-        let spacing: CGFloat = 80
-        let startX = size.width / 2 - spacing * 1.5
-
-        for (i, name) in cardNames.enumerated() {
-            let unlocked = inventory[name] ?? false
-            let color = unlocked ? SKColor.white : SKColor.gray
-            let card = SKSpriteNode(color: color, size: CGSize(width: 60, height: 80))
-            card.name = "Card_\(name)"
-            card.position = CGPoint(x: startX + CGFloat(i) * spacing, y: 100)
-
-            let label = SKLabelNode(text: name)
-            label.fontSize = 12
-            label.fontColor = .black
-            label.verticalAlignmentMode = .center
-            card.addChild(label)
-
-            addChild(card)
-        }
     }
 }
