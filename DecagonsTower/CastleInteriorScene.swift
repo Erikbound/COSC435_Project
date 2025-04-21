@@ -185,7 +185,17 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
 //        if names.contains("WolfNPC") && !inRiddle {
 //            presentRiddle()
 //        }
-        showCards(true)
+//        showCards(true)
+//            let nextScene = CastleInteriorScene(size: view.bounds.size, hasHealingCard: rewardHealing)
+//            nextScene.scaleMode = .resizeFill
+//            view.presentScene(nextScene, transition: .doorway(withDuration: 1.0))
+        if let view = self.view, let viewController = view.window?.rootViewController {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                if let battleVC = storyboard.instantiateViewController(withIdentifier: "BattleViewController") as? BattleViewController {
+                    battleVC.modalPresentationStyle = .fullScreen
+                    viewController.present(battleVC, animated: true, completion: nil)
+                }
+            }
     }
 
     // Update function used if player is walking or idling based on physicsBody velocity
