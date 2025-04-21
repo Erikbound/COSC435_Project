@@ -18,6 +18,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var riddleIndex = 0
     var correctAnswers = 0
     var castle: SKShapeNode!
+    var backgroundMusic: SKAudioNode?
     
     private var cameraNode = SKCameraNode()
     private var movementDirection: CGVector?
@@ -30,12 +31,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     override func didMove(to view: SKView) {
         // SKCameraNode used to set camera on player character
+        super.didMove(to: view)
         cameraNode = SKCameraNode()
         camera = cameraNode
         addChild(cameraNode)
         cameraNode.setScale(0.75) // Zooms in slightly
         
-        backgroundColor = .green
+        backgroundColor = .black
         physicsWorld.contactDelegate = self
 
         addMapBackground()
@@ -43,15 +45,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupWolf()
         setupRiddleZone()
         setupCastle()
+        playBackgroundMusic()
     }
 
     func addMapBackground() {
         let map = SKSpriteNode(imageNamed: "map") // Make sure "map" is added to Assets
-        
         map.position = CGPoint(x: size.width / 2, y: size.height / 2)
         map.size = CGSize(width: UIScreen.main.bounds.width, height:UIScreen.main.bounds.height )
         map.zPosition = -10
         addChild(map)
+        
+        // Adds boundaries to map so player can't walk out of bound
+        let border = SKPhysicsBody(edgeLoopFrom: map.frame)
+        border.categoryBitMask = PhysicsCategory.obstacle
+        border.contactTestBitMask = PhysicsCategory.player
+        border.collisionBitMask = PhysicsCategory.player
+        border.friction = 0
+        self.physicsBody = border
+    }
+    
+    // Plays music while on the map
+    func playBackgroundMusic() {
+        guard let url = Bundle.main.url(forResource: "backgroundMusic", withExtension: "mp3") else { return }
+        backgroundMusic = SKAudioNode(url: url)
+        addChild(backgroundMusic!)
+        backgroundMusic?.run(SKAction.play())
     }
 
     func setupPlayer() {
@@ -65,13 +83,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.physicsBody?.allowsRotation = false
         player.physicsBody?.linearDamping = 5.0
         player.physicsBody?.categoryBitMask =  PhysicsCategory.player
-        player.physicsBody?.contactTestBitMask =
-PhysicsCategory.wolf | PhysicsCategory.interactionZone |
-            PhysicsCategory.castle
-        player.physicsBody?.collisionBitMask = PhysicsCategory.castle
+        player.physicsBody?.contactTestBitMask = PhysicsCategory.wolf |
+        PhysicsCategory.interactionZone | PhysicsCategory.castle
+        player.physicsBody?.collisionBitMask = PhysicsCategory.castle | PhysicsCategory.obstacle
         addChild(player)
         player.setIdleAnimation()
     }
+    
     func setupCastle () {
         var rect = CGRect()
         rect.origin.x = UIScreen.main.bounds.width / 2 - 100
@@ -109,6 +127,7 @@ PhysicsCategory.wolf | PhysicsCategory.interactionZone |
         addChild(shape2)
            
     }
+    
     func setupWolf() {
         wolfNPC = SKSpriteNode(imageNamed: "wolf") // Make sure "Wolf" is added to Assets
         wolfNPC.size = CGSize(width: 50, height: 50)
@@ -306,6 +325,8 @@ PhysicsCategory.wolf | PhysicsCategory.interactionZone |
             nextScene.scaleMode = .resizeFill
             view.presentScene(nextScene, transition: .doorway(withDuration: 1.0))
         }
+        
+        backgroundMusic?.run(SKAction.stop())
     }
     
     // Update function used if player is walking or idling based on physicsBody velocity
