@@ -26,8 +26,20 @@ class BattleViewController: UIViewController {
         skView.showsFPS = true
         skView.showsNodeCount = true
         
+        //  Use Card Button Settings
         UseCardButtonOutlet.isEnabled = false
-        UseCardButtonOutlet.alpha = 0.75
+        UseCardButtonOutlet.alpha = 0.90
+        
+        //  Card Description settings
+        CardDescription.numberOfLines = 5
+        CardDescription.adjustsFontSizeToFitWidth = true
+        
+        //  End Turn Button
+        EndTurnButtonOutlet.tintColor = .systemRed
+        
+        //  Textbox Settings
+        Textbox.backgroundColor = .systemGray6
+        Textbox.numberOfLines = 2
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -55,6 +67,7 @@ class BattleViewController: UIViewController {
 
     @IBOutlet weak var PlayerHPLabel: UILabel!
     @IBOutlet weak var PlayerEnergyLabel: UILabel!
+    @IBOutlet weak var PlayerCardsLeft: UILabel!
     
     @IBOutlet weak var EnemyHPLabel: UILabel!
     @IBOutlet weak var EnemyEnergyLabel: UILabel!
@@ -64,7 +77,7 @@ class BattleViewController: UIViewController {
     @IBOutlet weak var PlayerCard3: UIImageView!
     
     @IBOutlet weak var UseCardButtonOutlet: UIButton!
-    
+    @IBOutlet weak var EndTurnButtonOutlet: UIButton!
     
     @IBOutlet weak var CardDescription: UILabel!
     
@@ -74,16 +87,53 @@ class BattleViewController: UIViewController {
     
     @IBOutlet weak var skView: SKView!
     
+    var selectedCardTag: Int = 0
+    enum battleState{
+        case playerTurn
+        case enemyTurn
+    }
+    var currentBattleState = battleState.playerTurn
+    @IBOutlet weak var Textbox: UILabel!
+    
+    
+    func UpdateUI(){
+        PlayerHPLabel.text = "HP: \(battlePlayer.currentHP)/\(battlePlayer.maxHP)"
+        PlayerEnergyLabel.text = "Energy: \(battlePlayer.currentEnergy)/\(battlePlayer.maxEnergy)"
+        PlayerCardsLeft.text = "Cards Left: \(battlePlayer.deck.count)"
+        
+        EnemyHPLabel.text = "HP: \(battleEnemy.currentHP)/\(battleEnemy.maxHP)"
+        EnemyEnergyLabel.text = "Energy: \(battleEnemy.currentEnergy)/\(battleEnemy.maxEnergy)"
+        
+            //Set the Image to the respective card
+        if battlePlayer.hand.count > 0{
+            PlayerCard1.image = UIImage(named: battlePlayer.hand[0].name)
+        } else{
+            PlayerCard1.image = UIImage(named: "Empty Card")
+        }
+        
+        if battlePlayer.hand.count > 1{
+            PlayerCard2.image = UIImage(named: battlePlayer.hand[1].name)
+        } else{
+            PlayerCard2.image = UIImage(named: "Empty Card")
+        }
+        
+        if battlePlayer.hand.count > 2{
+            PlayerCard3.image = UIImage(named: battlePlayer.hand[2].name)
+        } else{
+            PlayerCard3.image = UIImage(named: "Empty Card")
+        }
+        
+            //Keep all of the enemy's cards hidden
+        EnemyCard1.image = UIImage(named:"Empty Card")
+        EnemyCard2.image = UIImage(named:"Empty Card")
+        EnemyCard3.image = UIImage(named:"Empty Card")
+        
+        
+    }
     
     
     func setCards(){
-        
-        CardDescription.numberOfLines = 5
-        CardDescription.adjustsFontSizeToFitWidth = true
-        
-        PlayerCard1.image = UIImage(named: battlePlayer.deck[0].name)
-        PlayerCard2.image = UIImage(named: battlePlayer.deck[1].name)
-        PlayerCard3.image = UIImage(named: battlePlayer.deck[2].name)
+        UpdateUI()
         
         // Enable user interaction
         PlayerCard1.isUserInteractionEnabled = true
@@ -102,29 +152,45 @@ class BattleViewController: UIViewController {
         PlayerCard1.addGestureRecognizer(tap1)
         PlayerCard2.addGestureRecognizer(tap2)
         PlayerCard3.addGestureRecognizer(tap3)
-        
     }
     
         //When a card is tapped, highlight it
     @objc func cardTapped(_ sender: UITapGestureRecognizer) {
-        guard let tappedCard = sender.view as? UIImageView else { return }
-        
-        battlePlayer.selectedCard = battlePlayer.deck[tappedCard.tag]
-        
-        UseCardButtonOutlet.isEnabled = true
-        UseCardButtonOutlet.alpha = 1
-        
-        CardDescription.text = GetCardDescription(card: battlePlayer.deck[tappedCard.tag])
+        if currentBattleState == battleState.playerTurn {
+                //Track which card was selected
+            guard let tappedCard = sender.view as? UIImageView else { return }
+            selectedCardTag = tappedCard.tag
+            
+            battlePlayer.selectedCard = battlePlayer.hand[tappedCard.tag]
+            
+            if battlePlayer.selectedCard!.energyCost <= battlePlayer.currentEnergy {
+                UseCardButtonOutlet.isEnabled = true
+                UseCardButtonOutlet.alpha = 1
+                CardDescription.text = GetCardDescription(card: battlePlayer.hand[tappedCard.tag])
+            } else {
+                CardDescription.text = "Not enough energy to use card!"
+            }
+        }
     }
     
     
     @IBAction func UseCardButton(_ sender: Any) {
         guard let selectedCard = battlePlayer.selectedCard else { return }
         
+        PlayerUseCard(card: selectedCard, deckIndex: selectedCardTag)
+        
+        CardDescription.text = ""
         
         print("Card used: \(selectedCard.name)")
         UseCardButtonOutlet.isEnabled = false
         UseCardButtonOutlet.alpha = 0.75
+    }
+    @IBAction func EndTurnButton(_ sender: Any) {
+            //End Turn without playing a card
+        currentBattleState = battleState.enemyTurn
+        ExecuteEnemyTurn()
+        
+        CardDescription.text = ""
     }
     
     

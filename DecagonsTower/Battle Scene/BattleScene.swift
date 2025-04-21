@@ -25,14 +25,4 @@ class BattleScene: SKScene{
         addChild(bg)
     }
     
-    
-    
-    
-    
-    
-    //    func setCards(){
-    //        PlayerCard1.image = UIImage(named: battlePlayer.deck[0].name)
-    //        PlayerCard2.image = UIImage(named: battlePlayer.deck[1].name)
-    //        PlayerCard3.image = UIImage(named: battlePlayer.deck[2].name)
-    //    }
 }

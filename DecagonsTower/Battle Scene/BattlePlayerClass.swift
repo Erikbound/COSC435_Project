@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class BattlePlayerClass{
-    var maxHP: Int = 400
+    var maxHP: Int = 100
     var currentHP: Int
     var maxEnergy: Int = 10
     var currentEnergy: Int
@@ -25,12 +25,11 @@ class BattlePlayerClass{
     let maxDiscardSize: Int = 10
     var discardPile: [CardData] = []
     
-    
     var selectedCard: CardData?
     
     
     init() {
-        self.currentHP = self.maxHP
+        self.currentHP = 30//self.maxHP
         self.currentEnergy = 5
         self.maxDeckSize = 10
         
@@ -42,8 +41,12 @@ class BattlePlayerClass{
         AddCardtoDeck(name: "Castle Guard")
         AddCardtoDeck(name: "Slime")
         AddCardtoDeck(name: "Mage")
-        AddCardtoDeck(name: "Castle Guard")
-        AddCardtoDeck(name: "Castle Guard")
+        AddCardtoDeck(name: "Wolf")
+        AddCardtoDeck(name: "Knight")
+        AddCardtoDeck(name: "Theif")
+        
+        DrawCardFromDeck()
+        DrawCardFromDeck()
     }
     
     func AddCardtoDeck(name: String){
@@ -59,6 +62,11 @@ class BattlePlayerClass{
             
             hand.append(deck.remove(at: randomCardIndex))
         }
+    }
+    
+    func AddCardtoDiscardPile(card: CardData, deckIndex: Int){
+        discardPile.append(card)
+        hand.remove(at: deckIndex)
     }
     
     func AddEnergy(amount: Int){
