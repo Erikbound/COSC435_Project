@@ -11,6 +11,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var correctAnswers = 0
     var castle: SKShapeNode!
     var backgroundMusic: SKAudioNode?
+    let showCards: (Bool) -> Void
     
     private var cameraNode = SKCameraNode()
     private var movementDirection: CGVector?
@@ -20,7 +21,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ("What goes up but never comes down?", "Your age", "A balloon"),
         ("I’m tall when I’m young, and I’m short when I’m old. What am I?", "A candle", "A pencil")
     ]
-
+    
+    init(size: CGSize, showCards: @escaping (Bool) -> Void) {
+        self.showCards = showCards
+        super.init(size: size)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func didMove(to view: SKView) {
         // SKCameraNode used to set camera on player character
         super.didMove(to: view)
@@ -91,6 +101,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let radius: CGFloat = 100
         let position1 = CGPoint(x: center.x, y: center.y + radius)
         let shape = SKShapeNode(ellipseIn: rect)
+        shape.name = "Castle 1"
         
         shape.position = position1
         shape.fillColor = .red
@@ -105,6 +116,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(shape)
         
         let shape2 = SKShapeNode(ellipseIn: rect)
+        shape2.name = "Castle 2"
         let position2 = CGPoint(x: position1.x, y: position1.y + 85)
         shape2.position = position2
         shape2.fillColor = .black
@@ -316,7 +328,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let nextScene = CastleInteriorScene(
                 size: view.bounds.size,
                 hasHealingCard: rewardHealing,
-                showCards: { _ in }
+                showCards: showCards
             )
             nextScene.scaleMode = .resizeFill
             view.presentScene(nextScene, transition: .doorway(withDuration: 1.0))

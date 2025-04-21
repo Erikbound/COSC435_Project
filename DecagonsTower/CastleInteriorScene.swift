@@ -30,12 +30,12 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
         
         backgroundColor = .darkGray
         physicsWorld.contactDelegate = self
-
+        
         addBackgroundImage(name: "InsideCastle")
         setupPlayer(contactTestBitMask: PhysicsCategory.wolf | PhysicsCategory.interactionZone)
         setUpEnemyKnight()
         setUpBattleZone()
-
+        
         inventory = [
             "Hit": true,
             "Repel": true,
@@ -47,13 +47,14 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
     private func setUpCamera(scale: Double = 0.75) {
         cameraNode = SKCameraNode()
         camera = cameraNode
+        cameraNode.name = "Camera"
         addChild(cameraNode)
         cameraNode.setScale(scale)
     }
 
     func addBackgroundImage(name: String) {
         let background = SKSpriteNode(imageNamed: name) // Make sure "map" is added to Assets
-        
+        background.name = "Background"
         background.position = CGPoint(x: size.width / 2, y: size.height / 2)
         background.size = CGSize(width: UIScreen.main.bounds.width, height:UIScreen.main.bounds.height )
         background.zPosition = -10
@@ -72,6 +73,7 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
         player.physicsBody?.linearDamping = 5.0
         player.physicsBody?.categoryBitMask =  PhysicsCategory.player
         player.physicsBody?.contactTestBitMask = contactTestBitMask
+        player.name = "Player"
         addChild(player)
         player.setIdleAnimation()
     }
@@ -86,19 +88,27 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
         enemyNPC.physicsBody?.isDynamic = false
         enemyNPC.physicsBody?.categoryBitMask = PhysicsCategory.enemyKnight
         enemyNPC.physicsBody?.contactTestBitMask = PhysicsCategory.player
+        enemyNPC.name = "Enemy Knight"
         addChild(enemyNPC)
     }
 
     func setUpBattleZone() {
-        battleZone = SKSpriteNode(color: .red, size: .init(width: 30, height: 30))
-        battleZone.position = CGPoint(x: size.width / 2, y: 305)
+        battleZone = SKSpriteNode(color: .clear, size: .init(width: 30, height: 30))
+        battleZone.position = CGPoint(x: size.width / 2, y: 355)
         battleZone.physicsBody = SKPhysicsBody(circleOfRadius: 30)
         battleZone.physicsBody?.isDynamic = false
         battleZone.physicsBody?.categoryBitMask = PhysicsCategory.interactionZone
         battleZone.physicsBody?.contactTestBitMask = PhysicsCategory.player
         battleZone.physicsBody?.collisionBitMask = 0
         battleZone.zPosition = -1
+        battleZone.name = "Battle Zone"
         addChild(battleZone)
+        
+        let label = SKLabelNode(text: "Enter the battle zone")
+        label.position = CGPoint(x: size.width / 2, y: 220)
+        label.fontSize = 20.0
+        label.numberOfLines = 1
+        addChild(label)
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

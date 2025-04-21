@@ -23,12 +23,12 @@ class GameViewController: UIViewController {
         let skView = SKView(frame: view.frame)
         view.addSubview(skView)
 
-//        let scene = GameScene(size: skView.bounds.size)
-        let scene = CastleInteriorScene(
-            size: skView.bounds.size,
-            hasHealingCard: true,
-            showCards: showCards
-        )
+        let scene = GameScene(size: skView.bounds.size, showCards: showCards(_:))
+//        let scene = CastleInteriorScene(
+//            size: skView.bounds.size,
+//            hasHealingCard: true,
+//            showCards: showCards
+//        )
         scene.scaleMode = .aspectFill
         skView.presentScene(scene)
 
