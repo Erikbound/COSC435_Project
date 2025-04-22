@@ -15,6 +15,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private var cameraNode = SKCameraNode()
     private var movementDirection: CGVector?
+    
+    private let mapImageSize = CGSize(width: 512, height: 512)
+    private var mapScale: CGFloat {
+        let mapXScale = mapImageSize.width / UIScreen.main.bounds.width
+        let mapYScale = mapImageSize.height / UIScreen.main.bounds.height
+        return max(mapXScale, mapYScale)
+    }
 
     let riddles: [(question: String, correct: String, wrong: String)] = [
         ("What has to be broken before you can use it?", "An egg", "A clock"),
@@ -41,7 +48,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         backgroundColor = .black
         physicsWorld.contactDelegate = self
-
+        
         addMapBackground()
         setupPlayer()
         setupWolf()
@@ -52,8 +59,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     func addMapBackground() {
         let map = SKSpriteNode(imageNamed: "Outside Map") // Make sure "map" is added to Assets
-        map.position = CGPoint(x: size.width / 2, y: size.height / 2)
-        map.size = CGSize(width: UIScreen.main.bounds.width, height:UIScreen.main.bounds.height )
+        map.position = CGPoint(x: size.width / 2, y: 0)
+        
+        map.size = mapImageSize
+        map.setScale(mapScale)
         map.zPosition = -10
         addChild(map)
         
@@ -68,10 +77,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // Plays music while on the map
     func playBackgroundMusic() {
-        guard let url = Bundle.main.url(forResource: "backgroundMusic", withExtension: "mp3") else { return }
-        backgroundMusic = SKAudioNode(url: url)
-        addChild(backgroundMusic!)
-        backgroundMusic?.run(SKAction.play())
+//        guard let url = Bundle.main.url(forResource: "backgroundMusic", withExtension: "mp3") else { return }
+//        backgroundMusic = SKAudioNode(url: url)
+//        addChild(backgroundMusic!)
+//        backgroundMusic?.run(SKAction.play())
+        #warning("Add back in background music by uncommenting out above lines")
     }
 
     func setupPlayer() {
@@ -362,13 +372,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         
-        // Camera follows the player
-        let lerpFactor: CGFloat = 0.1
+        
+        
+        let lerpFactor: CGFloat = 1.0
         let targetCameraPosition = player.position
-        let newPosition = CGPoint(
-            x: cameraNode.position.x + (targetCameraPosition.x - cameraNode.position.x) * lerpFactor,
-            y: cameraNode.position.y + (targetCameraPosition.y - cameraNode.position.y) * lerpFactor
-        )
-        cameraNode.position = newPosition
+        
+        let xBoundry = (scene!.size.width * cameraNode.xScale) / 2.0
+        let minCameraX = xBoundry
+        let maxCameraX = scene!.size.width - xBoundry
+        var cameraX = cameraNode.position.x
+        if player.position.x >= minCameraX && player.position.x <= maxCameraX  {
+            cameraX = cameraNode.position.x + (targetCameraPosition.x - cameraNode.position.x)
+        }
+        
+        let yBoundry = (scene!.size.height * cameraNode.yScale) / 2.0
+        let minCameraY = yBoundry
+        let maxCameraY = scene!.size.height - yBoundry
+        var cameraY = cameraNode.position.y
+        if player.position.y >= minCameraY && player.position.y <= maxCameraY  {
+            cameraY = cameraNode.position.y + (targetCameraPosition.y - cameraNode.position.y)
+        }
+        
+        cameraNode.position = CGPoint(x: cameraX * lerpFactor, y: cameraY * lerpFactor)
     }
 }
