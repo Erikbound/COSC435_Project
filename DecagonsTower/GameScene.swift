@@ -47,12 +47,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //        // 🔊 Play test sound here
 //        run(SKAction.playSoundFileNamed("ding.wav", waitForCompletion: false))
 
-        // ⏯️ Background music
-        if let musicURL = Bundle.main.url(forResource: "backgroundMusic", withExtension: "mp3") {
-            backgroundMusic = SKAudioNode(url: musicURL)
-            backgroundMusic?.autoplayLooped = true
-            addChild(backgroundMusic!)
-        }
+//        // ⏯️ Background music
+//        if let musicURL = Bundle.main.url(forResource: "backgroundMusic", withExtension: "mp3") {
+//            backgroundMusic = SKAudioNode(url: musicURL)
+//            backgroundMusic?.autoplayLooped = true
+//            addChild(backgroundMusic!)
+//        }
 
         addMapBackground()
         setupPlayer()
@@ -372,9 +372,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         backgroundMusic?.run(SKAction.stop())
     }
-
-
-
+    
     override func update(_ currentTime: TimeInterval) {
         if inRiddle { return }
         if let target = targetLocation {
