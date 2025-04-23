@@ -1,7 +1,12 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene, SKPhysicsContactDelegate {
+class BaseScene: SKScene {
+    
+}
+
+
+class GameScene: BaseScene, SKPhysicsContactDelegate {
     var player: Player!
     var wolfNPC: SKSpriteNode!
     var riddleZone: SKNode!

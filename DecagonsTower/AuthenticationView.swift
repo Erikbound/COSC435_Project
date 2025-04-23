@@ -9,7 +9,8 @@ import SwiftUI
 
 struct AuthenticationView: View {
     private enum AuthenticationType { case signIn, signUp }
-    
+    @State private var shouldNavigateToGame = false
+
     @State private var authenticationType: AuthenticationType = .signIn
     
     @State private var email = ""
@@ -123,7 +124,11 @@ struct AuthenticationView: View {
         .ignoresSafeArea(.all)
         .animation(.default, value: authenticationType)
         .alert(alertTitle, isPresented: $isShowingAlert) {
+            
             Button("Ok", action: { isShowingAlert = false })
+        }
+        .fullScreenCover(isPresented: $shouldNavigateToGame){
+            GameViewControllerWrapper()
         }
     }
     
@@ -159,12 +164,18 @@ struct AuthenticationView: View {
         Task {
             do {
                 try await Authentication.signIn(email: email, password: password)
+                print("✅ Login successful")
+                DispatchQueue.main.async {
+                    self.shouldNavigateToGame = true
+                }
             } catch {
+                print("❌ Login failed: \(error.localizedDescription)")
                 alertTitle = "Something went wrong"
                 isShowingAlert = true
             }
         }
     }
+
     
     private func otherAuthenticationOptionPressed() {
         switch authenticationType {

@@ -1,3 +1,12 @@
+//
+//  DTUser.swift
+//  DecagonsTower
+//
+//  Created by Mu Mung on 4/23/25.
+//
+
+import Foundation
+
 class DTUser: Codable {
     let id: String
     let email: String
