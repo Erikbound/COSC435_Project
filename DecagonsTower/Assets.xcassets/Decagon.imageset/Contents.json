@@ -1,11 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "decagon_lower_and_larger.png",
+      "filename" : "Decagon.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Decagon 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
