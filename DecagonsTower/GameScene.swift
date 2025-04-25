@@ -8,7 +8,7 @@ class BaseScene: SKScene {
 
 class GameScene: BaseScene, SKPhysicsContactDelegate {
     var player: Player!
-    var wolfNPC: SKSpriteNode!
+    var wolfNPC: WolfNPC!
     var riddleZone: SKNode!
     var riddleUI: SKNode?
     var inRiddle = false
@@ -122,7 +122,7 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
     }
 
     func setupWolf() {
-        wolfNPC = SKSpriteNode(imageNamed: "wolf")
+        wolfNPC = WolfNPC()
         wolfNPC.name = "WolfNPC"
         wolfNPC.size = CGSize(width: 60, height: 60)
         wolfNPC.position = CGPoint(x: size.width / 2, y: (backgroundNode?.position.y ?? size.height / 2) + 55)

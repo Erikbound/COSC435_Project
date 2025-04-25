@@ -162,6 +162,7 @@ struct AuthenticationView: View {
     
     private func signIn() {
         Task {
+            self.shouldNavigateToGame = true
             do {
                 try await Authentication.signIn(email: email, password: password)
                 print("✅ Login successful")
