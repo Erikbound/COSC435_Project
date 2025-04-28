@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         //Uncomment this line to set the view back to the game view
 //        window?.rootViewController = GameViewController()
-        window?.rootViewController = UIHostingController(rootView: AuthenticationView())
+        window?.rootViewController = UIHostingController(rootView: AuthenticationView(didLogIn: didLogIn))
         
         
         
@@ -39,6 +39,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window?.makeKeyAndVisible()
         return true
+    }
+    
+    private func didLogIn() {
+        window?.rootViewController = GameViewController()
     }
 }
 

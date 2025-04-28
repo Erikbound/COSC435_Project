@@ -9,7 +9,8 @@ import SwiftUI
 
 struct AuthenticationView: View {
     private enum AuthenticationType { case signIn, signUp }
-    @State private var shouldNavigateToGame = false
+    
+    let didLogIn: () -> Void
 
     @State private var authenticationType: AuthenticationType = .signIn
     
@@ -127,9 +128,6 @@ struct AuthenticationView: View {
             
             Button("Ok", action: { isShowingAlert = false })
         }
-        .fullScreenCover(isPresented: $shouldNavigateToGame){
-            GameViewControllerWrapper()
-        }
     }
     
     private func authenticatePressed() {
@@ -162,12 +160,11 @@ struct AuthenticationView: View {
     
     private func signIn() {
         Task {
-            self.shouldNavigateToGame = true
             do {
                 try await Authentication.signIn(email: email, password: password)
                 print("✅ Login successful")
-                DispatchQueue.main.async {
-                    self.shouldNavigateToGame = true
+                await MainActor.run {
+                    didLogIn()
                 }
             } catch {
                 print("❌ Login failed: \(error.localizedDescription)")
@@ -184,8 +181,4 @@ struct AuthenticationView: View {
         case .signUp: authenticationType = .signIn
         }
     }
-}
-
-#Preview {
-    AuthenticationView()
 }

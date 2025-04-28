@@ -50,7 +50,7 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
                 try castleAudioEngine.start()
 
                 castleMusicPlayer.scheduleFile(castleMusicFile, at: nil, completionHandler: nil)
-                castleMusicPlayer.volume = 0.4 // adjust volume as needed
+                castleMusicPlayer.volume = 0.0 // adjust volume as needed
                 castleMusicPlayer.play()
 
             } catch {
