@@ -205,6 +205,7 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
         castleBarrier.zPosition = 2
         addChild(castleBarrier)
     }
+    
     func setupPathBarriersToCastle() {
         let pathWidth: CGFloat = 140
         let mapTop = backgroundNode?.frame.maxY ?? size.height
@@ -240,8 +241,6 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
         addChild(rightBarrier)
     }
 
-    
-
     func presentRiddle() {
         inRiddle = true
         wolfNPC.removeAllActions()
@@ -250,68 +249,108 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
         targetLocation = nil
         player.stopWalking()
 
-        // 🔉 Fade background music volume down
         backgroundMusic?.run(SKAction.changeVolume(to: 0.2, duration: 0.5))
 
         if riddleIndex >= riddles.count {
             endRiddleChallenge()
             return
         }
-    
-
 
         let riddle = riddles[riddleIndex]
         riddleUI = SKNode()
         riddleUI?.zPosition = 1000
 
-        // Bright overlay
+        // Dim Background
         let dim = SKShapeNode(rectOf: CGSize(width: size.width, height: size.height))
-        dim.fillColor = .black
-        dim.alpha = 0.4 // Lower alpha keeps it visible but not overpowering
-        dim.zPosition = 999
+//        dim.fillColor = .black
+//        dim.alpha = 0.4
+//        dim.zPosition = 999
         riddleUI?.addChild(dim)
 
-
-        // Box container
-        let box = SKShapeNode(rectOf: CGSize(width: 350, height: 260), cornerRadius: 18)
+        // Main Dialog Box
+        let boxWidth: CGFloat = 360
+        let boxHeight: CGFloat = 300
+        let box = SKShapeNode(rectOf: CGSize(width: boxWidth, height: boxHeight), cornerRadius: 18)
         box.fillColor = .black
         box.strokeColor = .white
         box.lineWidth = 3
-        box.position = .zero
+        box.position = CGPoint(x: 0, y: -(size.height/2) + boxHeight/2 + 20)
         riddleUI?.addChild(box)
+
+        // NPC Portrait
+        let portrait = SKSpriteNode(texture: wolfNPC.portraitTexture)
+        portrait.size = CGSize(width: 60, height: 60)
+        portrait.position = CGPoint(x: box.position.x - boxWidth/2 + 50, y: box.position.y + boxHeight/2 - 50)
+        portrait.zPosition = box.zPosition + 1
+        riddleUI?.addChild(portrait)
+
+        // NPC Name Label
+        let nameLabel = SKLabelNode(text: "Wolf")
+        nameLabel.fontName = "AvenirNext-Bold"
+        nameLabel.fontSize = 18
+        nameLabel.fontColor = .white
+        nameLabel.horizontalAlignmentMode = .left
+        nameLabel.verticalAlignmentMode = .center
+        nameLabel.position = CGPoint(x: portrait.position.x + 40, y: portrait.position.y)
+        nameLabel.zPosition = box.zPosition + 1
+        riddleUI?.addChild(nameLabel)
 
         // Riddle Question
         let question = SKLabelNode(text: riddle.question)
-        question.fontName = "AvenirNext-Bold"
-        question.fontSize = 22
+        question.fontName = "AvenirNext-Regular"
+        question.fontSize = 18
         question.fontColor = .white
-        question.position = CGPoint(x: 0, y: 70)
+        question.horizontalAlignmentMode = .left
+        question.verticalAlignmentMode = .top
+        question.preferredMaxLayoutWidth = boxWidth - 40
         question.numberOfLines = 0
-        question.preferredMaxLayoutWidth = 320
-        question.verticalAlignmentMode = .center
-        question.horizontalAlignmentMode = .center
+        question.position = CGPoint(x: box.position.x - boxWidth/2 + 20, y: nameLabel.position.y - 60)
+        question.zPosition = box.zPosition + 1
         riddleUI?.addChild(question)
 
-        // Correct Answer
+        // Choice Container Box
+        let choiceBoxWidth: CGFloat = boxWidth - 40
+        let choiceBoxHeight: CGFloat = 80
+        let choiceBox = SKShapeNode(rectOf: CGSize(width: choiceBoxWidth, height: choiceBoxHeight), cornerRadius: 12)
+        choiceBox.fillColor = .darkGray
+        choiceBox.strokeColor = .white
+        choiceBox.lineWidth = 2
+        choiceBox.position = CGPoint(x: box.position.x, y: box.position.y - boxHeight/2 + choiceBoxHeight/2 + 20)
+        choiceBox.zPosition = box.zPosition + 1
+        riddleUI?.addChild(choiceBox)
+
+        // Correct Choice Label
         let correct = SKLabelNode(text: riddle.correct)
         correct.name = "Choice_Correct"
         correct.fontName = "AvenirNext-Bold"
-        correct.fontSize = 20
+        correct.fontSize = 18
         correct.fontColor = .white
-        correct.position = CGPoint(x: 0, y: 20)
-        riddleUI?.addChild(correct)
+        correct.horizontalAlignmentMode = .center
+        correct.verticalAlignmentMode = .center
+        correct.position = CGPoint(x: 0, y: 15) // inside the choiceBox
+        correct.zPosition = choiceBox.zPosition + 1
+        correct.isHidden = true
+        choiceBox.addChild(correct)
 
-        // Wrong Answer
+        // Wrong Choice Label
         let wrong = SKLabelNode(text: riddle.wrong)
         wrong.name = "Choice_Wrong"
         wrong.fontName = "AvenirNext-Bold"
-        wrong.fontSize = 20
+        wrong.fontSize = 18
         wrong.fontColor = .white
-        wrong.position = CGPoint(x: 0, y: -30)
-        riddleUI?.addChild(wrong)
+        wrong.horizontalAlignmentMode = .center
+        wrong.verticalAlignmentMode = .center
+        wrong.position = CGPoint(x: 0, y: -20) // inside the choiceBox
+        wrong.zPosition = choiceBox.zPosition + 1
+        wrong.isHidden = true
+        choiceBox.addChild(wrong)
+        
+        animateText(riddle.question, on: question, characterDelay: 0.04) {
+            correct.isHidden = false
+            wrong.isHidden = false
+        }
 
-        // Position UI in center of camera
-        riddleUI?.position = .zero
+        // Add riddle UI to camera
         cameraNode.addChild(riddleUI!)
     }
 
@@ -376,6 +415,25 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
         }
 
         backgroundMusic?.run(SKAction.stop())
+    }
+    
+    // Animate the dialog Text
+    func animateText(_ text: String, on label: SKLabelNode, characterDelay: TimeInterval, completion: @escaping () -> Void) {
+        label.text = ""
+        let characters = Array(text)
+        var charIndex = 0
+
+        let wait = SKAction.wait(forDuration: characterDelay)
+        let addCharacter = SKAction.run { [weak label] in
+            guard charIndex < characters.count else { return }
+            label?.text?.append(characters[charIndex])
+            charIndex += 1
+        }
+        
+        let sequence = SKAction.sequence([wait, addCharacter])
+        let repeatAction = SKAction.repeat(sequence, count: characters.count)
+        
+        label.run(repeatAction, completion: completion)
     }
     
     override func update(_ currentTime: TimeInterval) {

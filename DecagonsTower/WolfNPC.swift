@@ -9,13 +9,12 @@ import SpriteKit
 // Handles Wolf NPC Animation
 class WolfNPC: SKSpriteNode {
     private var idleFrames: [SKTexture] = []
-    
+    let portraitTexture = SKTexture(imageNamed: "wolfPortrait")
+
     init() {
         let texture = SKTexture(imageNamed: "wolf_gray_full")
         let firstFrame = SKTexture(rect: CGRect(x: 1/12, y: 6/8, width: 1/11, height: 2/11), in: texture)
-        
         super.init(texture: firstFrame, color: .clear, size: firstFrame.size())
-        
         prepareIdleAnimation(spriteSheet: texture)
         startIdleAnimation()
     }
@@ -28,8 +27,8 @@ class WolfNPC: SKSpriteNode {
     private func prepareIdleAnimation(spriteSheet: SKTexture) {
         for i in 0..<6 {
             let rect = CGRect(
-                x: CGFloat(i) / 12,   // Each frame is 1/8 wide
-                y: 6/8,            // First row (top row is at y=5/6)
+                x: CGFloat(i) / 12,
+                y: 6/8,
                 width: 1/12,
                 height: 1/8
             )
