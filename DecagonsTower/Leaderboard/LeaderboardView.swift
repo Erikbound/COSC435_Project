@@ -7,26 +7,6 @@
 
 import SwiftUI
 
-struct Player2: Identifiable {
-    let id: String
-    let name: String
-    let enemyDefeated: Int
-    let cardsCollected: Int
-    
-    static let testPlayers: [Player2] = [
-        Player2(id: "1", name: "Aria", enemyDefeated: 5, cardsCollected: 12),
-        Player2(id: "2", name: "Blaze", enemyDefeated: 8, cardsCollected: 15),
-        Player2(id: "3", name: "Cyra", enemyDefeated: 3, cardsCollected: 9),
-        Player2(id: "4", name: "Dax", enemyDefeated: 10, cardsCollected: 20),
-        Player2(id: "5", name: "Eira", enemyDefeated: 7, cardsCollected: 14),
-        Player2(id: "6", name: "Fynn", enemyDefeated: 2, cardsCollected: 6),
-        Player2(id: "7", name: "Galen", enemyDefeated: 4, cardsCollected: 10),
-        Player2(id: "8", name: "Hana", enemyDefeated: 6, cardsCollected: 13),
-        Player2(id: "9", name: "Ivan", enemyDefeated: 9, cardsCollected: 17),
-        Player2(id: "10", name: "Juno", enemyDefeated: 1, cardsCollected: 5)
-    ]
-}
-
 struct LeaderboardView: View {
     private enum LeaderboardType: CaseIterable, Identifiable {
         case cardsCollected, enemiesDefeated
@@ -42,13 +22,14 @@ struct LeaderboardView: View {
     }
     
     @State private var leaderboardType: LeaderboardType = .cardsCollected
+    @State private var players: [DTUser] = []
     
-    var sortedPlayers: [Player2] {
+    var sortedPlayers: [DTUser] {
         switch leaderboardType {
         case .cardsCollected:
-            Player2.testPlayers.sorted { $0.cardsCollected > $1.cardsCollected }
+            players.sorted { $0.cardsCollected > $1.cardsCollected }
         case .enemiesDefeated:
-            Player2.testPlayers.sorted { $0.enemyDefeated > $1.enemyDefeated }
+            players.sorted { $0.enemiesDefeated > $1.enemiesDefeated }
         }
     }
     
@@ -73,10 +54,10 @@ struct LeaderboardView: View {
                                     .bold()
                                     .frame(width: 30, alignment: .leading)
                                 
-                                Text(player.element.name)
+                                Text(player.element.username)
                                     .font(.title)
                                     .frame(maxWidth: .infinity, alignment :.leading)
-                                
+
                                 Text(scoreString(player: player.element))
                                     .font(.title)
                             }
@@ -87,17 +68,26 @@ struct LeaderboardView: View {
             .padding(.horizontal, 20)
             .padding(.vertical)
             .navigationTitle("Leaderboard")
+            .task {
+                do {
+                    let allPlayers =  try await Database.fetchPlayers()
+                    await MainActor.run {
+                        players = allPlayers
+                    }
+                } catch {
+                    print(error.localizedDescription)
+                    print(error)
+                    #warning("TODO - show error")
+                }
+            }
+            .animation(.default, value: leaderboardType)
         }
     }
     
-    private func scoreString(player: Player2) -> String {
+    private func scoreString(player: DTUser) -> String {
         switch leaderboardType {
         case .cardsCollected: String(player.cardsCollected)
-        case .enemiesDefeated: String(player.enemyDefeated)
+        case .enemiesDefeated: String(player.enemiesDefeated)
         }
     }
-}
-
-#Preview {
-    LeaderboardView()
 }

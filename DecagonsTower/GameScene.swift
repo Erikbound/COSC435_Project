@@ -88,8 +88,8 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
 
     func setupTargetMarker() {
         targetMarker = SKShapeNode(circleOfRadius: 10)
-        targetMarker?.fillColor = .yellow
-        targetMarker?.strokeColor = .orange
+        targetMarker?.fillColor = .clear
+        targetMarker?.strokeColor = .clear
         targetMarker?.alpha = 0.8
         targetMarker?.zPosition = 1
         targetMarker?.isHidden = true
@@ -149,7 +149,7 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
         riddleZone.zPosition = 1
 
         if let shape = riddleZone as? SKShapeNode {
-            shape.strokeColor = .yellow
+            shape.strokeColor = .clear
             shape.lineWidth = 2
             shape.fillColor = .clear
         }
@@ -171,8 +171,8 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
         let shape1 = SKShapeNode(ellipseIn: rect)
         shape1.name = "Castle 1"
         shape1.position = CGPoint(x: size.width / 2, y: castleBaseY)
-        shape1.fillColor = .red
-        shape1.strokeColor = .red
+        shape1.fillColor = .clear
+        shape1.strokeColor = .clear
         shape1.lineWidth = 5
         shape1.physicsBody = SKPhysicsBody(circleOfRadius: 100)
         shape1.physicsBody?.affectedByGravity = false
@@ -196,7 +196,7 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
 
         let castleBarrier = SKShapeNode(ellipseOf: CGSize(width: 150, height: 200))
         castleBarrier.position = CGPoint(x: size.width / 2, y: wolfNPC.position.y + 90)
-        castleBarrier.strokeColor = .red
+        castleBarrier.strokeColor = .clear
         castleBarrier.lineWidth = 2
         castleBarrier.fillColor = .clear
         castleBarrier.physicsBody = SKPhysicsBody(edgeLoopFrom: castleBarrier.path!)
@@ -214,7 +214,7 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
         // LEFT Barrier (with visible color)
         let leftBarrier = SKShapeNode(rectOf: CGSize(width: 4, height: barrierHeight))
         leftBarrier.position = CGPoint(x: (size.width / 2) - (pathWidth / 2) - 2, y: (mapTop + mapBottom) / 2)
-        leftBarrier.fillColor = .red
+        leftBarrier.fillColor = .clear
         leftBarrier.strokeColor = .clear
         leftBarrier.alpha = 0.4
         leftBarrier.zPosition = 50
@@ -228,7 +228,7 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
         // RIGHT Barrier (with visible color)
         let rightBarrier = SKShapeNode(rectOf: CGSize(width: 4, height: barrierHeight))
         rightBarrier.position = CGPoint(x: (size.width / 2) + (pathWidth / 2) + 2, y: (mapTop + mapBottom) / 2)
-        rightBarrier.fillColor = .blue
+        rightBarrier.fillColor = .clear
         rightBarrier.strokeColor = .clear
         rightBarrier.alpha = 0.4
         rightBarrier.zPosition = 50
@@ -327,7 +327,7 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
 
             let background = SKShapeNode(rectOf: CGSize(width: 360, height: 80), cornerRadius: 14)
             background.fillColor = .black
-            background.strokeColor = .red
+            background.strokeColor = .clear
             background.lineWidth = 3
             warningBox.addChild(background)
 

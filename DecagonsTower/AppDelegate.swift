@@ -20,9 +20,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
         
-        //Uncomment this line to set the view back to the game view
-//        window?.rootViewController = GameViewController()
         window?.rootViewController = UIHostingController(rootView: AuthenticationView(didLogIn: didLogIn))
+        
+        //window?.rootViewController = UIHostingController(rootView: LeaderboardView())
         
         
         

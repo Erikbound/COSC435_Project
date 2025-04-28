@@ -26,4 +26,19 @@ class Database {
         let usersRef = Firestore.firestore().collection("users")
         try usersRef.addDocument(from: user)
     }
+    
+    static func fetchPlayers() async throws -> [DTUser] {
+        let usersRef = Firestore.firestore().collection("users")
+        let snapshot = try await usersRef.getDocuments()
+        return snapshot.documents.compactMap {
+            do {
+                return try $0.data(as: DTUser.self)
+            } catch {
+                print(#function)
+                print(error.localizedDescription)
+                print(error)
+                return nil
+            }
+        }
+    }
 }

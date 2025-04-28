@@ -7,7 +7,7 @@
 
 import Foundation
 
-class DTUser: Codable {
+class DTUser: Codable, Identifiable {
     let id: String
     let email: String
     let username: String
