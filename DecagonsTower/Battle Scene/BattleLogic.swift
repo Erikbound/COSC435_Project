@@ -5,6 +5,7 @@
 //  Created by Erik Umoh on 3/27/25.
 //
 
+import Foundation
     
 extension BattleViewController {
     
@@ -73,15 +74,20 @@ extension BattleViewController {
         //Put card in discard pile
         battlePlayer.AddCardtoDiscardPile(card: card, deckIndex: deckIndex)
         
-        //End Turn
-        currentBattleState = battleState.enemyTurn
-        ExecuteEnemyTurn()
     }
     
     func ExecuteEnemyTurn(){
         Textbox.text = "The enemy is making their move..."
-        currentBattleState = battleState.playerTurn
-        ExecutePlayerTurn()
+        
+        battleEnemy.DrawCardFromDeck()
+        battleEnemy.AddEnergy(amount: 1)
+        UpdateUI()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            // Code here runs after 2 seconds
+            self.currentBattleState = battleState.playerTurn
+            self.ExecutePlayerTurn()
+        }
     }
     
     

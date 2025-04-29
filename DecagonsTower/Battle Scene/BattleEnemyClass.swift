@@ -38,9 +38,9 @@ class BattleEnemyClass {
         AddCardtoDeck(name: "Castle Guard")
         AddCardtoDeck(name: "Slime")
         AddCardtoDeck(name: "Mage")
-        AddCardtoDeck(name: "Wolf")
-        AddCardtoDeck(name: "Knight")
-        AddCardtoDeck(name: "Theif")
+        AddCardtoDeck(name: "Slime")
+        AddCardtoDeck(name: "Slime")
+        AddCardtoDeck(name: "Slime")
         
         DrawCardFromDeck()
         DrawCardFromDeck()

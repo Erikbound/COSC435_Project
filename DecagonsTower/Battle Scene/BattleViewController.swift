@@ -8,6 +8,7 @@
 import UIKit
 import SpriteKit
 import GameplayKit
+import Foundation
 
 class BattleViewController: UIViewController {
     var battlePlayer = BattlePlayerClass()
@@ -40,6 +41,9 @@ class BattleViewController: UIViewController {
         //  Textbox Settings
         Textbox.backgroundColor = .systemGray6
         Textbox.numberOfLines = 2
+        
+        //Used Card Display
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -85,6 +89,10 @@ class BattleViewController: UIViewController {
     @IBOutlet weak var EnemyCard2: UIImageView!
     @IBOutlet weak var EnemyCard3: UIImageView!
     
+    @IBOutlet weak var UsedCard: UIImageView!
+    var UsedCardStartingPoint: CGPoint = CGPoint(x: -112, y: 479)
+    var UsedCardEndingPoint: CGPoint = CGPoint(x: 145, y: 200)
+    
     @IBOutlet weak var skView: SKView!
     
     var selectedCardTag: Int = 0
@@ -104,7 +112,7 @@ class BattleViewController: UIViewController {
         EnemyHPLabel.text = "HP: \(battleEnemy.currentHP)/\(battleEnemy.maxHP)"
         EnemyEnergyLabel.text = "Energy: \(battleEnemy.currentEnergy)/\(battleEnemy.maxEnergy)"
         
-            //Set the Image to the respective card
+            //Set the Image to the respective Player card
         if battlePlayer.hand.count > 0{
             PlayerCard1.image = UIImage(named: battlePlayer.hand[0].name)
         } else{
@@ -123,10 +131,32 @@ class BattleViewController: UIViewController {
             PlayerCard3.image = UIImage(named: "Empty Card")
         }
         
-            //Keep all of the enemy's cards hidden
-        EnemyCard1.image = UIImage(named:"Empty Card")
-        EnemyCard2.image = UIImage(named:"Empty Card")
-        EnemyCard3.image = UIImage(named:"Empty Card")
+        
+            //Set the Image to the respective Enemy card
+        if battleEnemy.hand.count > 0{
+            EnemyCard1.image = UIImage(named: battleEnemy.hand[0].name)
+        } else{
+            EnemyCard1.image = UIImage(named: "Empty Card")
+        }
+        
+        if battleEnemy.hand.count > 1{
+            EnemyCard2.image = UIImage(named: battleEnemy.hand[1].name)
+        } else{
+            EnemyCard2.image = UIImage(named: "Empty Card")
+        }
+        
+        if battleEnemy.hand.count > 2{
+            EnemyCard3.image = UIImage(named: battleEnemy.hand[2].name)
+        } else{
+            EnemyCard3.image = UIImage(named: "Empty Card")
+        }
+        
+        
+        
+//            //Keep all of the enemy's cards hidden
+//        EnemyCard1.image = UIImage(named:"Empty Card")
+//        EnemyCard2.image = UIImage(named:"Empty Card")
+//        EnemyCard3.image = UIImage(named:"Empty Card")
         
         
     }
@@ -177,14 +207,44 @@ class BattleViewController: UIViewController {
     @IBAction func UseCardButton(_ sender: Any) {
         guard let selectedCard = battlePlayer.selectedCard else { return }
         
+        // Use the card
         PlayerUseCard(card: selectedCard, deckIndex: selectedCardTag)
         
-        CardDescription.text = ""
+        UsedCard.image = UIImage(named: selectedCard.name)
         
-        print("Card used: \(selectedCard.name)")
+        // Animate Card
+        self.UsedCard.isHidden = false
+        UIView.animate(withDuration: 0.3,
+                       delay: 0,
+                       usingSpringWithDamping: 0.6,
+                       initialSpringVelocity: 1.0,
+                       options: [],
+                       animations: {
+            self.UsedCard.frame.origin = self.UsedCardEndingPoint
+        }){ _ in
+            // Wait 1 second after animation finishes
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self.UsedCard.isHidden = true
+                self.UsedCard.frame.origin = self.UsedCardStartingPoint
+                
+                self.UpdateUI()
+                    //Change Turns
+                if self.currentBattleState == battleState.playerTurn {
+                    self.currentBattleState = battleState.enemyTurn
+                    self.ExecuteEnemyTurn()
+                }
+            }
+        }
+        
+        // Clear Description
+        CardDescription.text = ""
+        Textbox.text = "You used\n\(selectedCard.name)!"
+        
+        //print("Card used: \(selectedCard.name)")
         UseCardButtonOutlet.isEnabled = false
         UseCardButtonOutlet.alpha = 0.75
     }
+    
     @IBAction func EndTurnButton(_ sender: Any) {
             //End Turn without playing a card
         currentBattleState = battleState.enemyTurn

@@ -122,6 +122,10 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="98G-kx-LZS" userLabel="Used Card">
+                                <rect key="frame" x="-112" y="479" width="240" height="344"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="aR3-l6-5a6"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -142,6 +146,7 @@
                         <outlet property="PlayerHPLabel" destination="DZ9-DX-F4S" id="jiS-Qq-0fE"/>
                         <outlet property="Textbox" destination="jsc-DY-LJM" id="bJz-AT-iNz"/>
                         <outlet property="UseCardButtonOutlet" destination="K1K-Zb-sQI" id="jM2-we-T4R"/>
+                        <outlet property="UsedCard" destination="98G-kx-LZS" id="jgf-fg-aL4"/>
                         <outlet property="skView" destination="rPI-ur-1qH" id="z7i-yl-d8A"/>
                     </connections>
                 </viewController>
