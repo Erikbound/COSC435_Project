@@ -1,3 +1,4 @@
+import AVFoundation
 import SpriteKit
 import GameplayKit
 
@@ -6,6 +7,10 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
     var enemyNPC: SKSpriteNode!
     var battleZone: SKNode!
     var inBattleZone = false
+    var castleAudioEngine: AVAudioEngine!
+    var castleMusicPlayer: AVAudioPlayerNode!
+    var castleMusicFile: AVAudioFile!
+
     let showCards: (Bool) -> Void
     
     private var cameraNode = SKCameraNode()
@@ -25,6 +30,34 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func didMove(to view: SKView) {
+        playCastleMusic ()
+        func playCastleMusic() {
+            do {
+                guard let url = Bundle.main.url(forResource: "castle_music_Akatsuki_Naruto", withExtension: "mp3") else {
+                    print("Castle music file not found")
+                    return
+                }
+
+                castleMusicFile = try AVAudioFile(forReading: url)
+
+                castleAudioEngine = AVAudioEngine()
+                castleMusicPlayer = AVAudioPlayerNode()
+                castleAudioEngine.attach(castleMusicPlayer)
+
+                let mixer = castleAudioEngine.mainMixerNode
+                castleAudioEngine.connect(castleMusicPlayer, to: mixer, format: castleMusicFile.processingFormat)
+
+                try castleAudioEngine.start()
+
+                castleMusicPlayer.scheduleFile(castleMusicFile, at: nil, completionHandler: nil)
+                castleMusicPlayer.volume = 0.4 // adjust volume as needed
+                castleMusicPlayer.play()
+
+            } catch {
+                print("Error playing castle music: \(error)")
+            }
+        }
+
         // SKCameraNode used to set camera on player character
         setUpCamera()
         
@@ -94,7 +127,7 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
 
     func setUpBattleZone() {
         battleZone = SKSpriteNode(color: .clear, size: .init(width: 30, height: 30))
-        battleZone.position = CGPoint(x: size.width / 2, y: 355)
+        battleZone.position = CGPoint(x: size.width / 2, y: 310)
         battleZone.physicsBody = SKPhysicsBody(circleOfRadius: 30)
         battleZone.physicsBody?.isDynamic = false
         battleZone.physicsBody?.categoryBitMask = PhysicsCategory.interactionZone

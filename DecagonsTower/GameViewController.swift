@@ -8,12 +8,13 @@ class GameViewController: UIViewController {
     private let healingButton = GameViewController.button("Healing")
     private let laserButton = GameViewController.button("Laser")
     
+    private lazy var stackView = makeStackView()
+    
     private static func button(_ title: String) -> UIButton {
         let button = UIButton(type: .system)
         button.setTitle(title, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .white
-        button.isHidden = true
         return button
     }
 
@@ -44,13 +45,18 @@ class GameViewController: UIViewController {
         laserButton.addTarget(self, action: #selector(laserButtonPressed), for: .touchUpInside)
     }
     
-    private func setUpLayout() {
+    private func makeStackView() -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: [hitButton, repelButton, healingButton, laserButton])
         stackView.axis = .horizontal
         stackView.spacing = 10
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        
+        stackView.isUserInteractionEnabled = false
+        stackView.isHidden = true
+        return stackView
+    }
+    
+    private func setUpLayout() {
         view.addSubview(stackView)
         
         stackView.heightAnchor.constraint(equalToConstant: 100).isActive = true
@@ -64,10 +70,8 @@ class GameViewController: UIViewController {
     }
     
     private func showCards(_ shouldShow: Bool) {
-        hitButton.isHidden = !shouldShow
-        repelButton.isHidden = !shouldShow
-        healingButton.isHidden = !shouldShow
-        laserButton.isHidden = !shouldShow
+        stackView.isHidden = !shouldShow
+        stackView.isUserInteractionEnabled = !shouldShow
     }
     
     @objc

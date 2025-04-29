@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import FirebaseCore
+import SwiftUI
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,8 +20,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
         
-        //Uncomment this line to set the view back to the game view
-        window?.rootViewController = GameViewController()
+        window?.rootViewController = UIHostingController(rootView: AuthenticationView(didLogIn: didLogIn))
+        
+        //window?.rootViewController = UIHostingController(rootView: LeaderboardView())
+        
+        
+        
+        FirebaseApp.configure()
+
         
         //Comment these lines out too
         //
@@ -31,6 +39,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window?.makeKeyAndVisible()
         return true
+    }
+    
+    private func didLogIn() {
+        window?.rootViewController = GameViewController()
     }
 }
 
