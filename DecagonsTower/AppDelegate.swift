@@ -18,15 +18,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        window = UIWindow(frame: UIScreen.main.bounds)
-        
-        window?.rootViewController = UIHostingController(rootView: AuthenticationView(didLogIn: didLogIn))
-        
-        //window?.rootViewController = UIHostingController(rootView: LeaderboardView())
-        
-        
-        
         FirebaseApp.configure()
+        
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.rootViewController = UIHostingController(rootView: AuthenticationView(didLogIn: didLogIn))
+    
+        
 
         
         //Comment these lines out too
@@ -38,11 +35,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         window?.makeKeyAndVisible()
+        
         return true
     }
     
     private func didLogIn() {
-        window?.rootViewController = GameViewController()
+        showGameViewController()
+    }
+    
+    private func showGameViewController() {
+        window?.rootViewController = GameViewController(completion: gameDidEnd)
+    }
+    
+    private func gameDidEnd() {
+        let gameOverView = GameOverView(playAgain: playAgain, showLeaderboard: showLeaderboard)
+        window?.rootViewController = UIHostingController(rootView: gameOverView)
+    }
+    
+    private func playAgain() {
+        showGameViewController()
+    }
+    
+    private func showLeaderboard() {
+        guard let rootVC = window?.rootViewController else {
+            print("root view controller was nil")
+            return
+        }
+        
+        let leaderboardVC = UIHostingController(rootView: LeaderboardView())
+        rootVC.present(leaderboardVC, animated: true)
     }
 }
 

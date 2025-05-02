@@ -17,6 +17,7 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
     var castle: SKShapeNode!
     var backgroundMusic: SKAudioNode?
     let showCards: (Bool) -> Void
+    let completion: () -> Void
     
 
     private var cameraNode = SKCameraNode()
@@ -32,8 +33,9 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
         ("I’m tall when I’m young, and I’m short when I’m old. What am I?", "A candle", "A pencil")
     ]
 
-    init(size: CGSize, showCards: @escaping (Bool) -> Void) {
+    init(size: CGSize, showCards: @escaping (Bool) -> Void, completion: @escaping () -> Void) {
         self.showCards = showCards
+        self.completion = completion
         super.init(size: size)
     }
 
@@ -408,7 +410,8 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
             let nextScene = CastleInteriorScene(
                 size: view.bounds.size,
                 hasHealingCard: rewardHealing,
-                showCards: showCards
+                showCards: showCards,
+                completion: completion
             )
             nextScene.scaleMode = .resizeFill
             view.presentScene(nextScene, transition: .doorway(withDuration: 1.0))

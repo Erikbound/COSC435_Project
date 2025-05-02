@@ -12,6 +12,7 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
     var castleMusicFile: AVAudioFile!
 
     let showCards: (Bool) -> Void
+    let completion: () -> Void
     
     private var cameraNode = SKCameraNode()
     private var movementDirection: CGVector?
@@ -19,9 +20,10 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
     var hasHealingCard: Bool = false
     var inventory: [String: Bool] = [:]
 
-    init(size: CGSize, hasHealingCard: Bool, showCards: @escaping (Bool) -> Void) {
+    init(size: CGSize, hasHealingCard: Bool, showCards: @escaping (Bool) -> Void, completion: @escaping () -> Void) {
         self.hasHealingCard = hasHealingCard
         self.showCards = showCards
+        self.completion = completion
         super.init(size: size)
     }
     
@@ -226,6 +228,7 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
                 if let battleVC = storyboard.instantiateViewController(withIdentifier: "BattleViewController") as? BattleViewController {
                     battleVC.modalPresentationStyle = .fullScreen
+                    battleVC.completion = { [weak self] in self?.completion() }
                     viewController.present(battleVC, animated: true, completion: nil)
                 }
             }

@@ -3,6 +3,8 @@ import SpriteKit
 
 class GameViewController: UIViewController {
     
+    let completion: () -> Void
+    
     private let hitButton = GameViewController.button("Hit")
     private let repelButton = GameViewController.button("Repel")
     private let healingButton = GameViewController.button("Healing")
@@ -17,14 +19,23 @@ class GameViewController: UIViewController {
         button.backgroundColor = .white
         return button
     }
-
+    
+    init(completion: @escaping () -> Void) {
+        self.completion = completion
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         let skView = SKView(frame: view.frame)
         view.addSubview(skView)
 
-        let scene = GameScene(size: skView.bounds.size, showCards: showCards(_:))
+        let scene = GameScene(size: skView.bounds.size, showCards: showCards(_:), completion: completion)
 //        let scene = CastleInteriorScene(
 //            size: skView.bounds.size,
 //            hasHealingCard: true,

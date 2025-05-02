@@ -11,9 +11,19 @@ import GameplayKit
 import Foundation
 
 class BattleViewController: UIViewController {
+    // CALL COMPLETION WHEN BATTLE ENDS TO END GAME
+    // CALL COMPLETION WHEN BATTLE ENDS TO END GAME
+    // CALL COMPLETION WHEN BATTLE ENDS TO END GAME
+    // CALL COMPLETION WHEN BATTLE ENDS TO END GAME
+    // CALL COMPLETION WHEN BATTLE ENDS TO END GAME
+    // CALL COMPLETION WHEN BATTLE ENDS TO END GAME
+    // CALL COMPLETION WHEN BATTLE ENDS TO END GAME
+    // CALL COMPLETION WHEN BATTLE ENDS TO END GAME
+    var completion: (() -> Void)?
+    
     var battlePlayer = BattlePlayerClass()
     var battleEnemy = BattleEnemyClass()
-    
+
     
     //View Functions
     override func viewDidLoad() {
@@ -191,6 +201,7 @@ class BattleViewController: UIViewController {
             guard let tappedCard = sender.view as? UIImageView else { return }
             selectedCardTag = tappedCard.tag
             
+            #warning("App crashed here - tried to access index 1 when array had 1 item")
             battlePlayer.selectedCard = battlePlayer.hand[tappedCard.tag]
             
             if battlePlayer.selectedCard!.energyCost <= battlePlayer.currentEnergy {
