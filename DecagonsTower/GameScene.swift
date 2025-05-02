@@ -114,7 +114,7 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
         player.physicsBody?.collisionBitMask = PhysicsCategory.castle | PhysicsCategory.obstacle
 
         let playerOutline = SKShapeNode(circleOfRadius: 10)
-        playerOutline.strokeColor = .cyan
+        playerOutline.strokeColor = .clear
         playerOutline.lineWidth = 2
         playerOutline.zPosition = player.zPosition + 1
         player.addChild(playerOutline)
@@ -230,7 +230,10 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
 
         // RIGHT Barrier (with visible color)
         let rightBarrier = SKShapeNode(rectOf: CGSize(width: 4, height: barrierHeight))
-        rightBarrier.position = CGPoint(x: (size.width / 2) + (pathWidth / 2) + 2, y: (mapTop + mapBottom) / 2)
+        rightBarrier.position = CGPoint(
+            x: (size.width / 2) + (pathWidth / 2) - 10,
+            y: (mapTop + mapBottom) / 2
+        )
         rightBarrier.fillColor = .clear
         rightBarrier.strokeColor = .clear
         rightBarrier.alpha = 0.4
