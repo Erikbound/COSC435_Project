@@ -13,6 +13,8 @@ import SwiftUI
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    
+    var loggedInUserID: String?
 
     func application(
         _ application: UIApplication,
@@ -22,9 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = UIHostingController(rootView: AuthenticationView(didLogIn: didLogIn))
-    
         
-
         
         //Comment these lines out too
         //
@@ -39,7 +39,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    private func didLogIn() {
+    private func didLogIn(userID: String) {
+        loggedInUserID = userID
         showGameViewController()
     }
     
@@ -47,9 +48,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = GameViewController(completion: gameDidEnd)
     }
     
-    private func gameDidEnd() {
-        let gameOverView = GameOverView(playAgain: playAgain, showLeaderboard: showLeaderboard)
-        window?.rootViewController = UIHostingController(rootView: gameOverView)
+    private func gameDidEnd(battleResult: BattleResult) {
+        Task {
+            if let loggedInUserID {
+                do {
+                    try await Database.updatePlayer(for: battleResult, userID: loggedInUserID)
+                } catch {
+                    print(error)
+                    print(error.localizedDescription)
+                }
+            }
+            
+            await MainActor.run {
+                let gameOverView = GameOverView(playAgain: playAgain, showLeaderboard: showLeaderboard)
+                window?.rootViewController = UIHostingController(rootView: gameOverView)
+            }
+        }
     }
     
     private func playAgain() {

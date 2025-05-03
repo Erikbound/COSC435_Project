@@ -10,7 +10,7 @@ import SwiftUI
 struct AuthenticationView: View {
     private enum AuthenticationType { case signIn, signUp }
     
-    let didLogIn: () -> Void
+    let didLogIn: (String) -> Void
 
     @State private var authenticationType: AuthenticationType = .signIn
     
@@ -161,10 +161,10 @@ struct AuthenticationView: View {
     private func signIn() {
         Task {
             do {
-                try await Authentication.signIn(email: email, password: password)
+                let userID = try await Authentication.signIn(email: email, password: password)
                 print("✅ Login successful")
                 await MainActor.run {
-                    didLogIn()
+                    didLogIn(userID)
                 }
             } catch {
                 print("❌ Login failed: \(error.localizedDescription)")

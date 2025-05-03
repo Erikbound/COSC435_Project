@@ -17,7 +17,7 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
     var castle: SKShapeNode!
     var backgroundMusic: SKAudioNode?
     let showCards: (Bool) -> Void
-    let completion: () -> Void
+    let completion: (BattleResult) -> Void
     
 
     private var cameraNode = SKCameraNode()
@@ -33,7 +33,7 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
         ("I’m tall when I’m young, and I’m short when I’m old. What am I?", "A candle", "A pencil")
     ]
 
-    init(size: CGSize, showCards: @escaping (Bool) -> Void, completion: @escaping () -> Void) {
+    init(size: CGSize, showCards: @escaping (Bool) -> Void, completion: @escaping (BattleResult) -> Void) {
         self.showCards = showCards
         self.completion = completion
         super.init(size: size)
@@ -231,7 +231,7 @@ class GameScene: BaseScene, SKPhysicsContactDelegate {
         // RIGHT Barrier (with visible color)
         let rightBarrier = SKShapeNode(rectOf: CGSize(width: 4, height: barrierHeight))
         rightBarrier.position = CGPoint(
-            x: (size.width / 2) + (pathWidth / 2) - 10,
+            x: (size.width / 2) + (pathWidth / 2) - 4,
             y: (mapTop + mapBottom) / 2
         )
         rightBarrier.fillColor = .clear

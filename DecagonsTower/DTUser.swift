@@ -11,8 +11,8 @@ class DTUser: Codable, Identifiable {
     let id: String
     let email: String
     let username: String
-    let enemiesDefeated: Int
-    let cardsCollected: Int
+    var enemiesDefeated: Int
+    var cardsCollected: Int
     
     init(
         id: String,

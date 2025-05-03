@@ -3,7 +3,8 @@ import SpriteKit
 
 class GameViewController: UIViewController {
     
-    let completion: () -> Void
+    // Bool is true if won, false if lost
+    let completion: (BattleResult) -> Void
     
     private let hitButton = GameViewController.button("Hit")
     private let repelButton = GameViewController.button("Repel")
@@ -20,7 +21,7 @@ class GameViewController: UIViewController {
         return button
     }
     
-    init(completion: @escaping () -> Void) {
+    init(completion: @escaping (BattleResult) -> Void) {
         self.completion = completion
         super.init(nibName: nil, bundle: nil)
     }
