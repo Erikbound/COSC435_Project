@@ -1,6 +1,11 @@
-import AVFoundation
+//
+//  Database.swift
+//  DecagonsTower
+//
+//  Created by Mu Mung on 4/22/25.
 import SpriteKit
 import GameplayKit
+import AVFAudio
 
 class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
     var player: Player!
@@ -70,7 +75,7 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
         setupPlayer(contactTestBitMask: PhysicsCategory.wolf | PhysicsCategory.interactionZone)
         setUpEnemyKnight()
         setUpBattleZone()
-//        setUpBoundary()
+        setUpBoundary()
         
         inventory = [
             "Hit": true,
@@ -96,29 +101,53 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
         background.zPosition = -10
         addChild(background)
     }
-    
+//
     private func setUpBoundary() {
-        let width: CGFloat = 380 + player.size.width
-        let height: CGFloat = 790 + player.size.width
+        let width: CGFloat = 350 + player.size.width
+        let height: CGFloat = 735 + player.size.width
         let x: CGFloat = size.width / 2
         let y: CGFloat = size.height / 2
         let size = CGSize(width: width, height: height)
+
+        // Main Boundary (edge loop with visible color)
         let boundary = SKShapeNode(rectOf: size)
         boundary.position = CGPoint(x: x, y: y)
-        boundary.strokeColor = .red
-        boundary.physicsBody = SKPhysicsBody(rectangleOf: size)
-        boundary.physicsBody?.isDynamic = false
+
+        // Red outline and transparent fill
+        boundary.strokeColor = .clear
+        boundary.lineWidth = 5
+        boundary.fillColor = SKColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+
+        // Physics → edge loop
+        boundary.physicsBody = SKPhysicsBody(edgeLoopFrom: CGRect(x: -size.width/2, y: -size.height/2, width: size.width, height: size.height))
         boundary.physicsBody?.categoryBitMask = PhysicsCategory.obstacle
-        
         boundary.physicsBody?.contactTestBitMask = PhysicsCategory.player
+        boundary.physicsBody?.collisionBitMask = PhysicsCategory.player // block player at edges
         boundary.name = "Boundary"
         addChild(boundary)
-    }
 
+        // Extra Top Blocker (visible)
+        let topBlockerWidth: CGFloat = width
+        let topBlockerHeight: CGFloat = 10 // thin wall
+
+        let topBlocker = SKShapeNode(rectOf: CGSize(width: topBlockerWidth, height: topBlockerHeight))
+        topBlocker.position = CGPoint(x: x, y: y + height / 2 - 154) // LOWERED by 150 points
+        topBlocker.strokeColor = .clear
+        topBlocker.lineWidth = 5
+        topBlocker.fillColor = SKColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0) // light blue
+
+        topBlocker.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: topBlockerWidth, height: topBlockerHeight))
+        topBlocker.physicsBody?.isDynamic = false
+        topBlocker.physicsBody?.categoryBitMask = PhysicsCategory.obstacle
+        topBlocker.physicsBody?.contactTestBitMask = PhysicsCategory.player
+        topBlocker.physicsBody?.collisionBitMask = PhysicsCategory.player
+
+        addChild(topBlocker)
+    }
     func setupPlayer(contactTestBitMask: UInt32) {
         let firstFrame = Player.loadIdleFrames().first ?? SKTexture()
         player = Player(texture: firstFrame, color: .clear, size: CGSize(width: 125, height: 125))
-        player.position = CGPoint(x: size.width / 2, y: (size.height / 2) - 300)
+        player.position = CGPoint(x: size.width / 2, y: (size.height / 2) - 350)
         player.zPosition = 10
         player.physicsBody = SKPhysicsBody(rectangleOf: player.size)
         player.physicsBody?.isDynamic = true
@@ -147,7 +176,7 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
     }
 
     func setUpBattleZone() {
-        battleZone = SKSpriteNode(color: .clear, size: .init(width: 30, height: 30))
+        battleZone = SKSpriteNode(color: .clear, size: .init(width: 200, height: 30))
         battleZone.position = CGPoint(x: size.width / 2, y: 310)
         battleZone.physicsBody = SKPhysicsBody(circleOfRadius: 30)
         battleZone.physicsBody?.isDynamic = false
@@ -158,10 +187,13 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
         battleZone.name = "Battle Zone"
         addChild(battleZone)
         
-        let label = SKLabelNode(text: "Enter the battle zone")
+        let label = SKLabelNode(text: "Enter the battle zone from the front")
         label.position = CGPoint(x: size.width / 2, y: 220)
-        label.fontSize = 20.0
-        label.numberOfLines = 1
+        label.fontSize = 14.0
+        label.fontName = "HelveticaNeue-Bold"
+        label.numberOfLines = 2
+        label.horizontalAlignmentMode = .center
+        label.verticalAlignmentMode = .center
         addChild(label)
     }
 
