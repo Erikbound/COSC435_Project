@@ -9,7 +9,7 @@ import AVFAudio
 
 class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
     var player: Player!
-    var enemyNPC: SKSpriteNode!
+    var enemyNPC: KnightNPC!
     var battleZone: SKNode!
     var inBattleZone = false
     var castleAudioEngine: AVAudioEngine!
@@ -162,17 +162,17 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func setUpEnemyKnight() {
-        enemyNPC = SKSpriteNode(imageNamed: "enemyKnight") // Make sure "Wolf" is added to Assets
-        enemyNPC.size = CGSize(width: 50, height: 50)
-        enemyNPC.position = CGPoint(x: size.width / 2, y: 410)
-        enemyNPC.name = "Enemy Night"
-        enemyNPC.zPosition = 10
-        enemyNPC.physicsBody = SKPhysicsBody(rectangleOf: enemyNPC.size)
-        enemyNPC.physicsBody?.isDynamic = false
-        enemyNPC.physicsBody?.categoryBitMask = PhysicsCategory.enemyKnight
-        enemyNPC.physicsBody?.contactTestBitMask = PhysicsCategory.player
-        enemyNPC.name = "Enemy Knight"
-        addChild(enemyNPC)
+        let knight = KnightNPC()
+        knight.size = CGSize(width: 150, height: 150)
+        knight.position = CGPoint(x: size.width / 2, y: 410)
+        knight.zPosition = 10
+        knight.physicsBody = SKPhysicsBody(rectangleOf: knight.size)
+        knight.physicsBody?.isDynamic = false
+        knight.physicsBody?.categoryBitMask = PhysicsCategory.enemyKnight
+        knight.physicsBody?.contactTestBitMask = PhysicsCategory.player
+        knight.name = "Enemy Knight"
+        addChild(knight)
+        enemyNPC = knight
     }
 
     func setUpBattleZone() {
