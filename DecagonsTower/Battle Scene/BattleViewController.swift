@@ -316,20 +316,5 @@ class BattleViewController: UIViewController {
         
         return desc
     }
-    
-    
-    func presentGameOverView() {
-        let gameOverView = GameOverView(
-            playAgain: {
-              print("Play Again")
-            },
-            showLeaderboard: {
-                print("Show Leaderboard")
-            }
-        )
-        let hostingController = UIHostingController(rootView: gameOverView)
-        hostingController.modalPresentationStyle = .fullScreen
-        present(hostingController, animated: true)
-    }
-    
+
 }
