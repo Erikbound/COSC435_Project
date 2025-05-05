@@ -25,7 +25,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = UIHostingController(rootView: AuthenticationView(didLogIn: didLogIn))
         
-        
         //Comment these lines out too
         //
 //        let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -60,7 +59,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             
             await MainActor.run {
-                let gameOverView = GameOverView(playAgain: playAgain, showLeaderboard: showLeaderboard)
+                let gameOverView = GameOverView(
+                    playAgain: playAgain,
+                    showLeaderboard: showLeaderboard,
+                    didWin: battleResult.didWin,
+                    cardsCount: battleResult.cardsWon
+                )
                 window?.rootViewController = UIHostingController(rootView: gameOverView)
             }
         }

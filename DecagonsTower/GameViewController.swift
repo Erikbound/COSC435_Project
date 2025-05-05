@@ -36,7 +36,11 @@ class GameViewController: UIViewController {
         let skView = SKView(frame: view.frame)
         view.addSubview(skView)
 
-        let scene = GameScene(size: skView.bounds.size, showCards: showCards(_:), completion: completion)
+        let scene = GameScene(
+            size: skView.bounds.size,
+            showCards: { [weak self] in self?.showCards($0) },
+            completion: { [weak self] in self?.completion($0) }
+        )
 //        let scene = CastleInteriorScene(
 //            size: skView.bounds.size,
 //            hasHealingCard: true,

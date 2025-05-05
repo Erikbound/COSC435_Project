@@ -12,7 +12,6 @@ import Foundation
 
 class BattleViewController: UIViewController {
     #warning("CALL COMPLETION WHEN BATTLE ENDS TO END GAME")
-
     var completion: ((BattleResult) -> Void)?
     
     var battlePlayer = BattlePlayerClass()
@@ -200,7 +199,12 @@ class BattleViewController: UIViewController {
             selectedCardTag = tappedCard.tag
             
             //#warning("App crashed here - tried to access index 1 when array had 1 item")
-            battlePlayer.selectedCard = battlePlayer.hand[tappedCard.tag]
+            if tappedCard.tag >= battlePlayer.hand.count {
+                let cardIndex = battlePlayer.hand.count - 1
+                battlePlayer.selectedCard = battlePlayer.hand[cardIndex]
+            } else {
+                battlePlayer.selectedCard = battlePlayer.hand[tappedCard.tag]
+            }
             
             if battlePlayer.selectedCard!.energyCost <= battlePlayer.currentEnergy {
                 UseCardButtonOutlet.isEnabled = true
@@ -245,11 +249,14 @@ class BattleViewController: UIViewController {
                 else {
                     if battleEnemy.currentHP == 0{
                         Textbox.text = "The enemy has been defeated!"
-                    } else if battlePlayer.hand.count == 0{
+                        CheckBattleState(state: battleState.playerWin)
+                        UpdateUI()
+                        completion?(.init(cardsWon: Int.random(in: 2...3), didWin: true))
+                    } else if battlePlayer.hand.count == 0 {
                         Textbox.text = "You're out of cards!\nYou have lost."
+                        CheckBattleState(state: battleState.playerLose)
+                        UpdateUI()
                     }
-                    CheckBattleState(state: battleState.playerWin)
-                    UpdateUI()
                 }
             }
         }
