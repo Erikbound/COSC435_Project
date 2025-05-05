@@ -174,7 +174,135 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
         addChild(knight)
         enemyNPC = knight
     }
+    
+    func presentKnightDialog() {
+        // Create dialog container node
+        let knightDialogUI = SKNode()
+        knightDialogUI.zPosition = 1000
 
+        // Main Dialog Box
+        let boxWidth: CGFloat = 360
+        let boxHeight: CGFloat = 300
+        let box = SKShapeNode(rectOf: CGSize(width: boxWidth, height: boxHeight), cornerRadius: 18)
+        box.fillColor = .black
+        box.strokeColor = .white
+        box.lineWidth = 3
+        box.position = CGPoint(x: 0, y: -(size.height/2) + boxHeight/2 + 20)
+        knightDialogUI.addChild(box)
+
+        // Knight Portrait
+        let portrait = SKSpriteNode(texture: SKTexture(imageNamed: "knightPortrait"))
+        portrait.size = CGSize(width: 60, height: 60)
+        portrait.position = CGPoint(x: box.position.x - boxWidth/2 + 50, y: box.position.y + boxHeight/2 - 50)
+        portrait.zPosition = box.zPosition + 1
+        knightDialogUI.addChild(portrait)
+
+        // Knight Name Label
+        let nameLabel = SKLabelNode(text: "Knight")
+        nameLabel.fontName = "AvenirNext-Bold"
+        nameLabel.fontSize = 18
+        nameLabel.fontColor = .white
+        nameLabel.horizontalAlignmentMode = .left
+        nameLabel.verticalAlignmentMode = .center
+        nameLabel.position = CGPoint(x: portrait.position.x + 40, y: portrait.position.y)
+        nameLabel.zPosition = box.zPosition + 1
+        knightDialogUI.addChild(nameLabel)
+
+        // Knight Message
+        let message = SKLabelNode(text: "Never should've come here.")
+        message.fontName = "AvenirNext-Regular"
+        message.fontSize = 18
+        message.fontColor = .white
+        message.horizontalAlignmentMode = .left
+        message.verticalAlignmentMode = .top
+        message.preferredMaxLayoutWidth = boxWidth - 40
+        message.numberOfLines = 0
+        message.position = CGPoint(x: box.position.x - boxWidth/2 + 20, y: nameLabel.position.y - 60)
+        message.zPosition = box.zPosition + 1
+        knightDialogUI.addChild(message)
+
+        // Choice Container Box
+        let choiceBoxWidth: CGFloat = boxWidth - 40
+        let choiceBoxHeight: CGFloat = 80
+        let choiceBox = SKShapeNode(rectOf: CGSize(width: choiceBoxWidth, height: choiceBoxHeight), cornerRadius: 12)
+        choiceBox.fillColor = .darkGray
+        choiceBox.strokeColor = .white
+        choiceBox.lineWidth = 2
+        choiceBox.position = CGPoint(x: box.position.x, y: box.position.y - boxHeight/2 + choiceBoxHeight/2 + 20)
+        choiceBox.zPosition = box.zPosition + 1
+        knightDialogUI.addChild(choiceBox)
+
+        // Fight Button
+        let fightButton = SKLabelNode(text: "Fight")
+        fightButton.name = "FightButton"
+        fightButton.fontName = "AvenirNext-Bold"
+        fightButton.fontSize = 18
+        fightButton.fontColor = .white
+        fightButton.horizontalAlignmentMode = .center
+        fightButton.verticalAlignmentMode = .center
+        fightButton.position = CGPoint(x: -60, y: 0)
+        fightButton.zPosition = choiceBox.zPosition + 1
+        choiceBox.addChild(fightButton)
+
+        // Run Away Button
+        let runButton = SKLabelNode(text: "Run Away")
+        runButton.name = "RunButton"
+        runButton.fontName = "AvenirNext-Bold"
+        runButton.fontSize = 18
+        runButton.fontColor = .white
+        runButton.horizontalAlignmentMode = .center
+        runButton.verticalAlignmentMode = .center
+        runButton.position = CGPoint(x: 60, y: 0)
+        runButton.zPosition = choiceBox.zPosition + 1
+        choiceBox.addChild(runButton)
+
+        // Add dialog UI to camera or scene
+        cameraNode.addChild(knightDialogUI)
+        
+        animateText("Never should've come here.", on: message, characterDelay: 0.04) {
+            fightButton.isHidden = false
+            runButton.isHidden = false
+        }
+    }
+    
+    func removeDialog() {
+        childNode(withName: "DialogBox")?.removeFromParent()
+    }
+
+    func presentBattleScreen() {
+        if let view = self.view, let viewController = view.window?.rootViewController {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            if let battleVC = storyboard.instantiateViewController(withIdentifier: "BattleViewController") as? BattleViewController {
+                battleVC.modalPresentationStyle = .fullScreen
+                battleVC.completion = { [weak self] result in self?.completion(result) }
+                viewController.present(battleVC, animated: true, completion: nil)
+            }
+        }
+    }
+
+    func sendPlayerBackToMap() {
+        
+    }
+    
+    // Animate the dialog Text
+    func animateText(_ text: String, on label: SKLabelNode, characterDelay: TimeInterval, completion: @escaping () -> Void) {
+        label.text = ""
+        let characters = Array(text)
+        var charIndex = 0
+
+        let wait = SKAction.wait(forDuration: characterDelay)
+        let addCharacter = SKAction.run { [weak label] in
+            guard charIndex < characters.count else { return }
+            label?.text?.append(characters[charIndex])
+            charIndex += 1
+        }
+        
+        let sequence = SKAction.sequence([wait, addCharacter])
+        let repeatAction = SKAction.repeat(sequence, count: characters.count)
+        
+        label.run(repeatAction, completion: completion)
+    }
+    
     func setUpBattleZone() {
         battleZone = SKSpriteNode(color: .clear, size: .init(width: 200, height: 30))
         battleZone.position = CGPoint(x: size.width / 2, y: 310)
@@ -235,7 +363,16 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
         guard let touch = touches.first else { return }
         let location = touch.location(in: self)
         let node = atPoint(location)
-        movePlayerToward(touch.location(in: self))
+
+        if node.name == "FightButton" {
+            removeDialog()
+            presentBattleScreen()
+        } else if node.name == "RunButton" {
+            removeDialog()
+            sendPlayerBackToMap()
+        } else {
+            movePlayerToward(location)
+        }
 
         if inBattleZone {
 //            if node.name == "Choice_Correct" {
@@ -277,18 +414,27 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
 //            view.presentScene(nextScene, transition: .doorway(withDuration: 1.0))
         
         
-        guard contact.bodyA.categoryBitMask == PhysicsCategory.interactionZone ||
-                contact.bodyB.categoryBitMask == PhysicsCategory.interactionZone
-        else { return }
+//        guard contact.bodyA.categoryBitMask == PhysicsCategory.interactionZone ||
+//                contact.bodyB.categoryBitMask == PhysicsCategory.interactionZone
+//        else { return }
+//
+//        if let view = self.view, let viewController = view.window?.rootViewController {
+//            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//                if let battleVC = storyboard.instantiateViewController(withIdentifier: "BattleViewController") as? BattleViewController {
+//                    battleVC.modalPresentationStyle = .fullScreen
+//                    battleVC.completion = { [weak self] result in self?.completion(result) }
+//                    viewController.present(battleVC, animated: true, completion: nil)
+//                }
+//            }
         
-        if let view = self.view, let viewController = view.window?.rootViewController {
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                if let battleVC = storyboard.instantiateViewController(withIdentifier: "BattleViewController") as? BattleViewController {
-                    battleVC.modalPresentationStyle = .fullScreen
-                    battleVC.completion = { [weak self] result in self?.completion(result) }
-                    viewController.present(battleVC, animated: true, completion: nil)
-                }
-            }
+        guard contact.bodyA.categoryBitMask == PhysicsCategory.interactionZone ||
+              contact.bodyB.categoryBitMask == PhysicsCategory.interactionZone
+        else { return }
+
+        if !inBattleZone {
+            inBattleZone = true
+            presentKnightDialog()
+        }
     }
 
     // Update function used if player is walking or idling based on physicsBody velocity
