@@ -247,7 +247,7 @@ class BattleViewController: UIViewController {
                     CheckBattleState(state: battleState.enemyTurn)
                 }
                 else {
-                    if battleEnemy.currentHP == 0{
+                    if battleEnemy.currentHP == 0 {
                         Textbox.text = "The enemy has been defeated!"
                         CheckBattleState(state: battleState.playerWin)
                         UpdateUI()
@@ -256,6 +256,7 @@ class BattleViewController: UIViewController {
                         Textbox.text = "You're out of cards!\nYou have lost."
                         CheckBattleState(state: battleState.playerLose)
                         UpdateUI()
+                        completion?(.init(cardsWon: 0, didWin: false))
                     }
                 }
             }

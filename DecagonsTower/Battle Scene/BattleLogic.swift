@@ -130,11 +130,15 @@ extension BattleViewController {
                         } else {
                             if battlePlayer.currentHP == 0{
                                 Textbox.text = "You have been defeated!"
+                                CheckBattleState(state: battleState.playerLose)
+                                UpdateUI()
+                                completion?(.init(cardsWon: 0, didWin: false))
                             } else if battleEnemy.hand.count == 0{
                                 Textbox.text = "The enemy is out of cards!\nYou win!"
+                                CheckBattleState(state: battleState.playerWin)
+                                UpdateUI()
+                                completion?(.init(cardsWon: Int.random(in: 2...3), didWin: true))
                             }
-                            CheckBattleState(state: battleState.playerWin)
-                            UpdateUI()
                         }
                     }
                 }

@@ -141,12 +141,16 @@ struct AuthenticationView: View {
         Task {
             do {
                 if try await Database.isUserNameAvailable(username: username) {
-                    let firebaseUser = try await Authentication.signUp(email: email, password: password)
+                    let userID = try await Authentication.signUp(email: email, password: password)
                     try Database.addUser(
-                        id: firebaseUser.uid,
+                        id: userID,
                         email: email,
                         username: username
                     )
+                    await MainActor.run {
+                        authenticationType = .signIn
+                        
+                    }
                 } else {
                     alertTitle = "Username already taken"
                     isShowingAlert = true

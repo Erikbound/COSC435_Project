@@ -9,11 +9,11 @@ import Foundation
 import FirebaseAuth
 
 class Authentication {
-    static func signUp(email: String, password: String) async throws -> User {
+    static func signUp(email: String, password: String) async throws -> String {
         do {
             let result = try await Auth.auth().createUser(withEmail: email, password: password)
             print(#function, "SUCCEDED")
-            return result.user
+            return result.user.uid
         } catch {
             print(#function, "FAILED")
             print(error)
