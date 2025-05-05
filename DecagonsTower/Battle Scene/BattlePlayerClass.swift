@@ -29,7 +29,7 @@ class BattlePlayerClass{
     
     
     init() {
-        self.currentHP = 30//self.maxHP
+        self.currentHP = self.maxHP
         self.currentEnergy = 5
         self.maxDeckSize = 10
         

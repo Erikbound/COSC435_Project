@@ -12,19 +12,7 @@ import Foundation
 
 class BattleViewController: UIViewController {
     #warning("CALL COMPLETION WHEN BATTLE ENDS TO END GAME")
-    #warning("CALL COMPLETION WHEN BATTLE ENDS TO END GAME")
-#warning("CALL COMPLETION WHEN BATTLE ENDS TO END GAME")
-#warning("CALL COMPLETION WHEN BATTLE ENDS TO END GAME")
-#warning("CALL COMPLETION WHEN BATTLE ENDS TO END GAME")
-#warning("CALL COMPLETION WHEN BATTLE ENDS TO END GAME")
-#warning("CALL COMPLETION WHEN BATTLE ENDS TO END GAME")
-#warning("CALL COMPLETION WHEN BATTLE ENDS TO END GAME")
-#warning("CALL COMPLETION WHEN BATTLE ENDS TO END GAME")
-#warning("CALL COMPLETION WHEN BATTLE ENDS TO END GAME")
-#warning("CALL COMPLETION WHEN BATTLE ENDS TO END GAME")
-#warning("CALL COMPLETION WHEN BATTLE ENDS TO END GAME")
-#warning("CALL COMPLETION WHEN BATTLE ENDS TO END GAME")
-#warning("CALL COMPLETION WHEN BATTLE ENDS TO END GAME")
+
     var completion: ((BattleResult) -> Void)?
     
     var battlePlayer = BattlePlayerClass()
@@ -66,7 +54,7 @@ class BattleViewController: UIViewController {
         super.viewDidAppear(animated)
         //print("PlayerHPLabel is \(PlayerHPLabel != nil ? "connected" : "nil")")
         //print("PlayerCard1 is \(PlayerCard1 != nil ? "connected" : "nil")")
-        startBattle()
+        CheckBattleState(state: battleState.playerTurn)
         setCards()
     }
     
@@ -106,8 +94,10 @@ class BattleViewController: UIViewController {
     @IBOutlet weak var EnemyCard3: UIImageView!
     
     @IBOutlet weak var UsedCard: UIImageView!
-    var UsedCardStartingPoint: CGPoint = CGPoint(x: -112, y: 479)
-    var UsedCardEndingPoint: CGPoint = CGPoint(x: 145, y: 200)
+    var UsedCardPlayerStartingPoint: CGPoint = CGPoint(x: -112, y: 479)
+    var UsedCardPlayerEndingPoint: CGPoint = CGPoint(x: 145, y: 200)
+    var UsedCardEnemyStartingPoint: CGPoint = CGPoint(x: -112, y: -100)
+    var UsedCardEnemyEndingPoint: CGPoint = CGPoint(x: 145, y: 200)
     
     @IBOutlet weak var skView: SKView!
     
@@ -115,6 +105,8 @@ class BattleViewController: UIViewController {
     enum battleState{
         case playerTurn
         case enemyTurn
+        case playerWin
+        case playerLose
     }
     var currentBattleState = battleState.playerTurn
     @IBOutlet weak var Textbox: UILabel!
@@ -207,7 +199,7 @@ class BattleViewController: UIViewController {
             guard let tappedCard = sender.view as? UIImageView else { return }
             selectedCardTag = tappedCard.tag
             
-            #warning("App crashed here - tried to access index 1 when array had 1 item")
+            //#warning("App crashed here - tried to access index 1 when array had 1 item")
             battlePlayer.selectedCard = battlePlayer.hand[tappedCard.tag]
             
             if battlePlayer.selectedCard!.energyCost <= battlePlayer.currentEnergy {
@@ -230,25 +222,34 @@ class BattleViewController: UIViewController {
         UsedCard.image = UIImage(named: selectedCard.name)
         
         // Animate Card
-        self.UsedCard.isHidden = false
+        UsedCard.isHidden = false
         UIView.animate(withDuration: 0.3,
                        delay: 0,
                        usingSpringWithDamping: 0.6,
                        initialSpringVelocity: 1.0,
                        options: [],
-                       animations: {
-            self.UsedCard.frame.origin = self.UsedCardEndingPoint
+                       animations: { [self] in
+            UsedCard.frame.origin = UsedCardPlayerEndingPoint
         }){ _ in
             // Wait 1 second after animation finishes
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                self.UsedCard.isHidden = true
-                self.UsedCard.frame.origin = self.UsedCardStartingPoint
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [self] in
+                UsedCard.isHidden = true
+                UsedCard.frame.origin = UsedCardEnemyStartingPoint
                 
-                self.UpdateUI()
+                UpdateUI()
                     //Change Turns
-                if self.currentBattleState == battleState.playerTurn {
-                    self.currentBattleState = battleState.enemyTurn
-                    self.ExecuteEnemyTurn()
+                if battleEnemy.currentHP > 0 && battlePlayer.hand.count > 0{
+                    currentBattleState = battleState.enemyTurn
+                    CheckBattleState(state: battleState.enemyTurn)
+                }
+                else {
+                    if battleEnemy.currentHP == 0{
+                        Textbox.text = "The enemy has been defeated!"
+                    } else if battlePlayer.hand.count == 0{
+                        Textbox.text = "You're out of cards!"
+                    }
+                    CheckBattleState(state: battleState.playerWin)
+                    UpdateUI()
                 }
             }
         }
@@ -260,14 +261,22 @@ class BattleViewController: UIViewController {
         //print("Card used: \(selectedCard.name)")
         UseCardButtonOutlet.isEnabled = false
         UseCardButtonOutlet.alpha = 0.75
+        
+        EndTurnButtonOutlet.isEnabled = false
+        EndTurnButtonOutlet.alpha = 0.75
     }
     
     @IBAction func EndTurnButton(_ sender: Any) {
             //End Turn without playing a card
         currentBattleState = battleState.enemyTurn
-        ExecuteEnemyTurn()
+        CheckBattleState(state: battleState.enemyTurn)
         
         CardDescription.text = ""
+        
+        UsedCard.frame.origin = UsedCardEnemyStartingPoint
+        
+        EndTurnButtonOutlet.isEnabled = false
+        EndTurnButtonOutlet.alpha = 0.75
     }
     
     
