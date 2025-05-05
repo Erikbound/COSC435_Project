@@ -246,7 +246,7 @@ class BattleViewController: UIViewController {
                     if battleEnemy.currentHP == 0{
                         Textbox.text = "The enemy has been defeated!"
                     } else if battlePlayer.hand.count == 0{
-                        Textbox.text = "You're out of cards!"
+                        Textbox.text = "You're out of cards!\nYou have lost."
                     }
                     CheckBattleState(state: battleState.playerWin)
                     UpdateUI()
