@@ -14,9 +14,9 @@ struct AuthenticationView: View {
 
     @State private var authenticationType: AuthenticationType = .signIn
     
-    @State private var email = "k@k.com"
+    @State private var email = ""
     @State private var username = ""
-    @State private var password = "password"
+    @State private var password = ""
     
     @State private var alertTitle = ""
     @State private var isShowingAlert = false

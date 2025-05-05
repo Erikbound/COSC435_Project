@@ -23,7 +23,6 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
     private var movementDirection: CGVector?
     
     var hasHealingCard: Bool = false
-    var inventory: [String: Bool] = [:]
 
     init(size: CGSize, hasHealingCard: Bool, showCards: @escaping (Bool) -> Void, completion: @escaping (BattleResult) -> Void) {
         self.hasHealingCard = hasHealingCard
@@ -76,13 +75,6 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
         setUpEnemyKnight()
         setUpBattleZone()
         setUpBoundary()
-        
-        inventory = [
-            "Hit": true,
-            "Repel": true,
-            "Healing": hasHealingCard,
-            "Laser": true
-        ]
     }
     
     private func setUpCamera(scale: Double = 0.75) {
@@ -178,6 +170,7 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
     func presentKnightDialog() {
         // Create dialog container node
         let knightDialogUI = SKNode()
+        knightDialogUI.name = "Knight Dialogue"
         knightDialogUI.zPosition = 1000
 
         // Main Dialog Box
@@ -267,6 +260,7 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
     
     func removeDialog() {
         childNode(withName: "DialogBox")?.removeFromParent()
+        cameraNode.childNode(withName: "Knight Dialogue")!.removeFromParent()
     }
 
     func presentBattleScreen() {
@@ -282,7 +276,7 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
     }
 
     func sendPlayerBackToMap() {
-        
+        player.run(.move(by: .init(dx: 0, dy: -100), duration: 0.5))
     }
     
     // Animate the dialog Text
@@ -369,8 +363,8 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
             removeDialog()
             presentBattleScreen()
         } else if node.name == "RunButton" {
-            removeDialog()
-            sendPlayerBackToMap()
+            let location = CGPoint(x: player.position.x, y: player.position.y - 100)
+            movePlayerToward(location)
         } else {
             movePlayerToward(location)
         }

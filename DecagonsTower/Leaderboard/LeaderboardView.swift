@@ -21,6 +21,8 @@ struct LeaderboardView: View {
         }
     }
     
+    @Environment(\.dismiss) var dismiss
+    
     @State private var leaderboardType: LeaderboardType = .cardsCollected
     @State private var players: [DTUser] = []
     
@@ -81,6 +83,12 @@ struct LeaderboardView: View {
                 }
             }
             .animation(.default, value: leaderboardType)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Close", action: { dismiss() })
+                }
+                
+            }
         }
     }
     
