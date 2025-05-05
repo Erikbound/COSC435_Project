@@ -270,6 +270,7 @@ class CastleInteriorScene: SKScene, SKPhysicsContactDelegate {
                 battleVC.modalPresentationStyle = .fullScreen
                 battleVC.completion = { [weak self] result in self?.completion(result) }
                 viewController.present(battleVC, animated: true, completion: nil)
+                castleMusicPlayer.stop()
             }
         }
     }

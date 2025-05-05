@@ -9,6 +9,7 @@ import UIKit
 import SpriteKit
 import GameplayKit
 import Foundation
+import SwiftUI
 
 class BattleViewController: UIViewController {
     #warning("CALL COMPLETION WHEN BATTLE ENDS TO END GAME")
@@ -55,7 +56,9 @@ class BattleViewController: UIViewController {
         //print("PlayerCard1 is \(PlayerCard1 != nil ? "connected" : "nil")")
         CheckBattleState(state: battleState.playerTurn)
         setCards()
+        
     }
+    
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         if UIDevice.current.userInterfaceIdiom == .phone {
@@ -312,6 +315,21 @@ class BattleViewController: UIViewController {
         
         
         return desc
+    }
+    
+    
+    func presentGameOverView() {
+        let gameOverView = GameOverView(
+            playAgain: {
+              print("Play Again")
+            },
+            showLeaderboard: {
+                print("Show Leaderboard")
+            }
+        )
+        let hostingController = UIHostingController(rootView: gameOverView)
+        hostingController.modalPresentationStyle = .fullScreen
+        present(hostingController, animated: true)
     }
     
 }
