@@ -17,8 +17,14 @@ extension BattleViewController {
             case battleState.enemyTurn:
                 ExecuteEnemyTurn()
             case battleState.playerWin:
-                break
-            case battleState.playerLose: break
+            if let scene = skView.scene as? BattleScene {
+                scene.stopBGM()
+                scene.playVictoryMusic()
+            }
+            case battleState.playerLose:
+            if let scene = skView.scene as? BattleScene {
+                scene.stopBGM()
+            }
         }
         
     }
@@ -133,6 +139,7 @@ extension BattleViewController {
                             } else if battleEnemy.hand.count == 0{
                                 Textbox.text = "The enemy is out of cards!\nYou win!"
                             }
+                            currentBattleState = battleState.playerWin
                             CheckBattleState(state: battleState.playerWin)
                             UpdateUI()
                         }
@@ -143,6 +150,7 @@ extension BattleViewController {
                 Textbox.text = "The enemy is out of energy and\ncouldn't attack!"
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [self] in
                     currentBattleState = battleState.playerTurn
+                    UsedCard.frame.origin = UsedCardPlayerStartingPoint
                     CheckBattleState(state: battleState.playerTurn)
                 }
             }

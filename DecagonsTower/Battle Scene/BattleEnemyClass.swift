@@ -7,7 +7,7 @@
 import Foundation
 
 class BattleEnemyClass {
-    var maxHP: Int = 50
+    var maxHP: Int = 70
     var currentHP: Int
     var maxEnergy: Int = 10
     var currentEnergy: Int
@@ -36,10 +36,11 @@ class BattleEnemyClass {
 //        }
         
         AddCardtoDeck(name: "Castle Guard")
-        AddCardtoDeck(name: "Slime")
         AddCardtoDeck(name: "Wolf")
         AddCardtoDeck(name: "Wolf")
         AddCardtoDeck(name: "Slime")
+        AddCardtoDeck(name: "Slime")
+        AddCardtoDeck(name: "Theif")
         
         DrawCardFromDeck()
         DrawCardFromDeck()

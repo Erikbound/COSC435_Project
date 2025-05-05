@@ -40,9 +40,12 @@ class BattlePlayerClass{
         
         AddCardtoDeck(name: "Castle Guard")
         AddCardtoDeck(name: "Slime")
-        AddCardtoDeck(name: "Mage")
         AddCardtoDeck(name: "Wolf")
+        AddCardtoDeck(name: "Mage")
+        AddCardtoDeck(name: "Mage")
         AddCardtoDeck(name: "Knight")
+        AddCardtoDeck(name: "Knight")
+        AddCardtoDeck(name: "Theif")
         AddCardtoDeck(name: "Theif")
         
         DrawCardFromDeck()
