@@ -54,4 +54,4 @@ Players will explore the tower, solve riddles, fight enemies using cards, and co
 ### Jaryl (Enemy and character movement and Gameplay Enhancements)
 - Updated the wolf NPC interactions into animated version. 
 - Upgraded the enemy knight with a "Run or Fight" choice mechanic for dynamic encounters.
-- 
+- Improve player and enemy knight movements.
